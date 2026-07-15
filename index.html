@@ -226,6 +226,10 @@ input[type=file]{position:absolute;left:-9999px;opacity:0}
       <div id="rCat" style="text-align:center;margin-bottom:8px"></div>
       <div id="rMetrics"></div>
       <div id="rTips" style="margin-top:8px;font-size:10px;color:var(--dim);line-height:1.5"></div>
+      <div id="premiumReport" style="display:none;margin-top:12px;padding:12px;background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(78,205,196,.08));border:1px solid var(--purple);border-radius:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:8px">💎 Premium-отчёт</div>
+        <div id="prContent"></div>
+      </div>
       <div style="text-align:center;margin-top:10px">
         <button class="b bg" onclick="shareResult()">📤 Поделиться</button>
         <button class="b bd" onclick="resetPhoto()">🔄 Ещё раз</button>
@@ -350,6 +354,8 @@ async function sendHeartbeat(){try{await fetch(API+'/api/heartbeat',{method:'POS
 async function fetchOnline(){try{const r=await fetch(API+'/api/online');const d=await r.json();if(d.ok)$('onlineCount').textContent=d.online}catch(e){}}
 async function fetchStats(){try{const r=await fetch(API+'/api/stats');const d=await r.json();if(d.ok){$('avgPsl').textContent=d.avgPsl?d.avgPsl.toFixed(1):'—';$('totalMeas').textContent=d.total||0}}catch(e){}}
 async function postScore(psl,symmetry){try{await fetch(API+'/api/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({psl,symmetry})})}catch(e){}}
+async function syncUser(){if(!myData)return;try{await fetch(API+'/api/user/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:myData.id,nickname:myData.nickname,elo:myData.elo,wins:myData.wins,losses:myData.losses,last_psl:myData.last_psl,metrics:myData.metrics})})}catch(e){}}
+async function fetchPercentile(myPsl){try{const r=await fetch(API+'/api/percentile');const d=await r.json();if(d.ok&&d.pslValues.length){const below=d.pslValues.filter(p=>p<myPsl).length;const pct=Math.round(below/d.total*100);return pct}return null}catch(e){return null}}
 sendHeartbeat();fetchOnline();fetchStats();
 setInterval(()=>{sendHeartbeat();fetchOnline();fetchStats()},30000);
 
@@ -456,7 +462,7 @@ function doReg(){
   $('nav').style.display='flex';
   $('sAuth').classList.remove('on');$('sProfile').classList.add('on');
   document.querySelector('[data-s="sProfile"]').classList.add('on');
-  checkDaily();updateProfileUI();playSound('unlock');toast('Добро пожаловать! 🪙 +150 за регистрацию');
+  checkDaily();updateProfileUI();syncUser();playSound('unlock');toast('Добро пожаловать! 🪙 +150 за регистрацию');
 }
 
 function doLogin(){
@@ -470,7 +476,7 @@ function doLogin(){
     $('nav').style.display='flex';
     $('sAuth').classList.remove('on');$('sProfile').classList.add('on');
     document.querySelector('[data-s="sProfile"]').classList.add('on');
-    checkDaily();updateProfileUI();return;
+    checkDaily();updateProfileUI();syncUser();return;
   }}
   toast('Неверный ник или пароль');
 }
@@ -557,14 +563,22 @@ function renderAchievements(){
 // === LEADERBOARD ===
 function getAllUsers(){return Object.values(getUsers()).filter(x=>x.nickname)}
 function switchLBTab(el,tab){lbTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderLB();fetchStats();fetchOnline()}
+let serverLBUsers=[];
+async function loadServerLB(){try{const r=await fetch(API+'/api/leaderboard');const d=await r.json();if(d.ok)serverLBUsers=d.users}catch(e){}}
 function renderLB(){
-  const users=getAllUsers();
-  if(lbTab==='elo')users.sort((a,b)=>(b.elo||1000)-(a.elo||1000));else users.sort((a,b)=>(b.last_psl||0)-(a.last_psl||0));
-  let h='';users.slice(0,50).forEach((p,i)=>{
-    const me=p.id===currentUser;const m=['🥇','🥈','🥉'][i]||'';
-    const val=lbTab==='elo'?(p.elo||1000):((p.last_psl||0).toFixed(1)+' PSL');
-    h+=`<div class="lb-row${me?' me':''}"><div class="pos${i<3?' t':''}">${i+1}</div><div style="font-size:16px">${m||'🎮'}</div><div class="nick">${p.nickname}</div><div class="elo">${val}</div></div>`;
-  });$('lbList').innerHTML=h||'<div class="empty">Пока нет данных</div>';
+  loadServerLB().then(()=>{
+    const local=getAllUsers();
+    const merged={};
+    local.forEach(u=>{merged[u.id]={...u}});
+    serverLBUsers.forEach(u=>{if(!merged[u.id])merged[u.id]=u;else{const m=merged[u.id];if(u.elo>m.elo||u.last_psl>m.last_psl){merged[u.id]={...m,elo:Math.max(m.elo||1000,u.elo||1000),last_psl:Math.max(m.last_psl||0,u.last_psl||0)}}}});
+    const users=Object.values(merged);
+    if(lbTab==='elo')users.sort((a,b)=>(b.elo||1000)-(a.elo||1000));else users.sort((a,b)=>(b.last_psl||0)-(a.last_psl||0));
+    let h='';users.slice(0,50).forEach((p,i)=>{
+      const me=p.id===currentUser;const m=['🥇','🥈','🥉'][i]||'';
+      const val=lbTab==='elo'?(p.elo||1000):((p.last_psl||0).toFixed(1)+' PSL');
+      h+=`<div class="lb-row${me?' me':''}"><div class="pos${i<3?' t':''}">${i+1}</div><div style="font-size:16px">${m||'🎮'}</div><div class="nick">${p.nickname}</div><div class="elo">${val}</div></div>`;
+    });$('lbList').innerHTML=h||'<div class="empty">Пока нет данных</div>';
+  });
 }
 
 // === MEDIAPIPE ===
@@ -649,6 +663,52 @@ function generateRoast(r){
   else if(r.psl>6)t.push('Ты либо модель, либо бот');return t;
 }
 
+async function generatePremiumReport(r){
+  const ideals={symmetry:90,ipd_score:85,nose_width_score:80,mouth_score:80,jaw:85,gold_vert:85,gold_horiz:75,tilt_score:80};
+  const names={symmetry:'Симметрия',ipd_score:'Межзрачковое',nose_width_score:'Нос',mouth_score:'Рот',jaw:'Челюсть',gold_vert:'Золотое пропорции ↕',gold_horiz:'Глаза ↔',tilt_score:'Наклон глаз'};
+  const metrics=Object.keys(ideals);
+  let totalImprove=0;
+  let weakest='';let weakestVal=100;
+  metrics.forEach(k=>{
+    const cur=r[k]||0;const ideal=ideals[k];
+    const diff=Math.max(0,ideal-cur);
+    if(diff>weakestVal){weakestVal=diff;weakest=names[k]}
+    totalImprove+=diff;
+  });
+  const pct=await fetchPercentile(r.psl);
+  const prevPsl=myData.last_psl;
+  const change=prevPsl?((r.psl-prevPsl)>=0?'+':'')+(r.psl-prevPsl).toFixed(1):null;
+  let h=`<div style="font-size:11px;line-height:1.7;color:var(--text)">`;
+  if(pct!==null){
+    h+=`<div style="margin-bottom:6px"><span style="color:var(--gold);font-weight:700">🏆 Персентиль: ${pct}%</span><div style="font-size:9px;color:var(--dim)">Ты обогнал ${pct}% всех пользователей</div></div>`;
+  }
+  if(change!==null){
+    h+=`<div style="margin-bottom:6px"><span style="color:${parseFloat(change)>=0?'var(--green)':'var(--red)'};font-weight:700">📈 Динамика: ${change}</span></div>`;
+  }
+  h+=`<div style="font-weight:700;color:var(--purple);margin:8px 0 4px">Анализ по метрикам:</div>`;
+  metrics.forEach(k=>{
+    const cur=r[k]||0;const ideal=ideals[k];
+    const diff=Math.max(0,ideal-cur);
+    const color=diff<=5?'var(--green)':diff<=15?'var(--gold)':'var(--red)';
+    const status=diff<=5?'✅':'⚠️';
+    h+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="font-size:10px">${status} ${names[k]}</span><span style="font-size:10px;color:${color}">${cur}% → <span style="color:var(--dim)">${ideal}%</span> ${diff>0?'(+'+diff+')':''}</span></div>`;
+  });
+  h+=`<div style="margin-top:8px;padding:8px;background:rgba(168,85,247,.1);border-radius:8px"><div style="font-size:10px;font-weight:700;color:var(--purple)">🎯 Потенциал роста: +${Math.round(totalImprove/metrics.length)}% среднее</div>`;
+  if(weakest){
+    h+=`<div style="font-size:9px;color:var(--dim);margin-top:4px">Слабое место: ${weakest} — стоит поработать над этой метрикой</div>`;
+  }
+  // Ideal face comparison
+  h+=`<div style="margin-top:6px;font-size:9px;color:var(--dim)"><b style="color:var(--text)">Идеальные пропорции:</b><br>`;
+  h+=`• Симметрия: 90%+ (зеркальная симметрия)<br>`;
+  h+=`• Межглазное расстояние: 46% от ширины скул<br>`;
+  h+=`• Ширина носа: ~100% от IPD<br>`;
+  h+=`• Ширина рта: ~40% от ширины скул<br>`;
+  h+=`• Челюсть: ~88% от ширины скул<br>`;
+  h+=`• Наклон глаз: +3-6° вверх</div>`;
+  h+=`</div></div>`;
+  $('prContent').innerHTML=h;
+}
+
 // === PHOTO ===
 let photoDataUrl=null;
 $('uploadZone').addEventListener('click',function(){document.getElementById('fileInput').click()});
@@ -705,12 +765,17 @@ function showResult(r){
   $('rMetrics').innerHTML=mh;
   const tips=generateTips(r),roasts=generateRoast(r);
   let th=tips.map(t=>'✅ '+t).join('<br>');if(roasts.length)th+='<br><br>'+roasts.map(t=>'<span style="color:var(--red)">🔥 '+t+'</span>').join('<br>');$('rTips').innerHTML=th;
+  // Premium report
+  if(myData&&(myData.premium||myData.vip||myData.platinum)){
+    $('premiumReport').style.display='';
+    generatePremiumReport(r);
+  } else $('premiumReport').style.display='none';
   if(myData){
     const prev_psl=myData.last_psl;myData.last_psl=r.psl;myData.metrics=r;
     if(!myData.history)myData.history=[];myData.history.push({date:new Date().toISOString().split('T')[0],psl:r.psl,symmetry:r.symmetry});
     let coins=10;const mult=(myData.double_coins_until&&Date.now()<myData.double_coins_until)?2:1;if(myData.lucky_analyses>0){coins=15;myData.lucky_analyses--}
     coins*=mult;myData.coins=(myData.coins||0)+coins;
-    setUserData(currentUser,myData);postScore(r.psl,r.symmetry);checkAchievements();updateProfileUI();playSound('coin');toast('+'+coins+' 🪙 за анализ!');
+    setUserData(currentUser,myData);postScore(r.psl,r.symmetry);syncUser();checkAchievements();updateProfileUI();playSound('coin');toast('+'+coins+' 🪙 за анализ!');
   }
   $('resultCard').scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -744,7 +809,7 @@ function doBattle(opp){
   const{nw,nl}=calcElo(w.elo||1000,l.elo||1000);
   w.elo=nw;w.wins=(w.wins||0)+1;w.coins=(w.coins||0)+25;l.elo=nl;l.losses=(l.losses||0)+1;
   if(won){myData.win_streak=(myData.win_streak||0)+1;myData.best_win_streak=Math.max(myData.best_win_streak||0,myData.win_streak)}else myData.win_streak=0;
-  setUserData(opp.id,opp);setUserData(currentUser,myData);
+  setUserData(opp.id,opp);setUserData(currentUser,myData);syncUser();
   const el=document.createElement('div');el.className='card';
   el.innerHTML=`<div class="battle-card"><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">Ты</div><div class="${won?'winner':'loser'}" style="font-size:14px;font-weight:700">${won?'🏆':'💀'} PSL ${wp.toFixed(1)}</div></div><div class="vs">VS</div><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">${opp.nickname}</div><div class="${!won?'winner':'loser'}" style="font-size:14px;font-weight:700">${!won?'🏆':'💀'} PSL ${lp.toFixed(1)}</div></div></div><div style="text-align:center;font-size:12px;font-weight:700;color:${won?'var(--green)':'var(--red)'}">${won?'Победа! +25 🪙':'Проиграл'}</div>`;
   const h=$('battleHistory');if(h.classList.contains('empty'))h.innerHTML='';h.prepend(el);
