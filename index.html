@@ -8,7 +8,9 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a14;--bg2:#12122a;--bd:#1e1e3a;--gold:#f7c948;--gold2:#c8940a;--red:#ff6b6b;--green:#4ecdc4;--purple:#a855f7;--pink:#ff6b9d;--blue:#4a9eff;--text:#e0d8c8;--dim:#5a5a7a;--r:12px}
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);user-select:none;-webkit-user-select:none}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text)}
+.scr,.nav,.card,.lb-row,.quest,.ach-card,.pill{user-select:none;-webkit-user-select:none}
+input[type=file]{position:absolute;left:-9999px;opacity:0}
 .scr{position:fixed;inset:0;z-index:1;display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
 .scr.on{display:flex}
 .scr>div{padding:12px;width:100%;max-width:480px;margin:0 auto}
@@ -203,10 +205,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
     <div class="card">
       <h3>📷 Загрузи фото анфас</h3>
       <div class="sub">Чёткое, без очков и масок. +10 🪙 за анализ</div>
-      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+      <div class="upload-zone" id="uploadZone">
         <div class="ui">📸</div><div class="ut">Нажми или перетащи фото</div>
+        <div style="margin-top:8px;font-size:10px;color:var(--dim)">JPG, PNG, WebP · до 10 МБ</div>
       </div>
-      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" style="display:none">
+      <input type="file" id="fileInput" accept="image/*" capture="user" style="position:absolute;left:-9999px;opacity:0;width:1px;height:1px">
       <img id="photoPreview" class="photo-preview" style="display:none">
       <div id="analyzeBtn" style="display:none;text-align:center;margin:8px 0">
         <button class="b bg" onclick="analyzePhoto()">🔍 Анализировать</button>
@@ -604,8 +607,18 @@ function drawAnalysis(canvas,img,pts,r){
   const sx=w/(img.naturalWidth||img.width),sy=h/(img.naturalHeight||img.height);
   const p=i=>[Math.round(pts[i][0]*sx),Math.round(pts[i][1]*sy)];
   const nx=p(1)[0];
-  [[  [nx,p(10)[1]],[nx,p(152)[1]],'#00ff00'],[p(234),p(454),'#ffff00'],[p(58),p(288),'#00ffff'],[p(468),p(473),'#ff00ff'],[p(98),p(327),'#800080'],[p(61),p(291),'#ff0000'],[p(168),p(1),'#008080'],[p(33),p(133),'#ff8000'],[p(362),p(263),'#ff8000']
-  ].forEach(([a,b,c])=>{ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()});
+  const lines=[
+    [[nx,p(10)[1]],[nx,p(152)[1]],'#00ff00'],
+    [p(234),p(454),'#ffff00'],
+    [p(58),p(288),'#00ffff'],
+    [p(468),p(473),'#ff00ff'],
+    [p(98),p(327),'#800080'],
+    [p(61),p(291),'#ff0000'],
+    [p(168),p(1),'#008080'],
+    [p(33),p(133),'#ff8000'],
+    [p(362),p(263),'#ff8000']
+  ];
+  lines.forEach(([a,b,c])=>{ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()});
   [1,10,152,234,454,58,288,468,473,98,327,61,291,168,33,133,362,263].forEach(i=>{const pt=p(i);ctx.fillStyle='rgba(0,255,0,0.6)';ctx.beginPath();ctx.arc(pt[0],pt[1],2,0,Math.PI*2);ctx.fill()});
   const bw=w<400?60:80,bh=w<400?28:34,bx=w-bw-10,by=10;
   ctx.fillStyle='rgba(10,10,20,0.85)';ctx.fillRect(bx,by,bw,bh);ctx.strokeStyle='rgba(247,201,72,0.6)';ctx.lineWidth=1;ctx.strokeRect(bx,by,bw,bh);
@@ -638,9 +651,38 @@ function generateRoast(r){
 
 // === PHOTO ===
 let photoDataUrl=null;
-$('fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>10*1024*1024){toast('Файл >10MB');$('fileInput').value='';return}const r=new FileReader();r.onload=ev=>{photoDataUrl=ev.target.result;$('photoPreview').src=photoDataUrl;$('photoPreview').style.display='';$('analyzeBtn').style.display='';$('uploadZone').style.display='none'};r.readAsDataURL(f)};
+$('uploadZone').addEventListener('click',function(){document.getElementById('fileInput').click()});
+$('fileInput').addEventListener('change',function(e){
+  const f=e.target.files[0];if(!f)return;
+  if(f.size>10*1024*1024){toast('Файл >10МБ');$('fileInput').value='';return}
+  const r=new FileReader();
+  r.onload=function(ev){photoDataUrl=ev.target.result;$('photoPreview').src=photoDataUrl;$('photoPreview').style.display='';$('analyzeBtn').style.display='';$('uploadZone').style.display='none'};
+  r.onerror=function(){toast('Ошибка чтения файла')};
+  r.readAsDataURL(f);
+});
 
-function resetPhoto(){photoDataUrl=null;$('photoPreview').style.display='none';$('photoPreview').src='';$('analyzeBtn').style.display='none';$('uploadZone').style.display='';$('analyzing').style.display='none';$('resultCard').style.display='none';$('annotatedCanvas').style.display='none';$('fileInput').value=''}
+function resetPhoto(){
+  photoDataUrl=null;
+  $('photoPreview').style.display='none';$('photoPreview').src='';
+  $('analyzeBtn').style.display='none';
+  $('uploadZone').style.display='';
+  $('analyzing').style.display='none';
+  $('resultCard').style.display='none';
+  $('annotatedCanvas').style.display='none';
+  $('fileInput').value='';
+}
+
+// Drag and drop
+$('uploadZone').addEventListener('dragover',function(e){e.preventDefault();e.stopPropagation();this.style.borderColor='var(--gold)'});
+$('uploadZone').addEventListener('dragleave',function(e){e.preventDefault();this.style.borderColor=''});
+$('uploadZone').addEventListener('drop',function(e){
+  e.preventDefault();e.stopPropagation();this.style.borderColor='';
+  const f=e.dataTransfer.files[0];if(!f)return;
+  if(f.size>10*1024*1024){toast('Файл >10МБ');return}
+  const r=new FileReader();
+  r.onload=function(ev){photoDataUrl=ev.target.result;$('photoPreview').src=photoDataUrl;$('photoPreview').style.display='';$('analyzeBtn').style.display='';$('uploadZone').style.display='none'};
+  r.readAsDataURL(f);
+});
 
 async function analyzePhoto(){
   if(!photoDataUrl){toast('Загрузи фото');return}if(analyzingBusy)return;analyzingBusy=true;
@@ -658,8 +700,9 @@ async function analyzePhoto(){
 
 function showResult(r){
   $('resultCard').style.display='';$('rPsl').textContent=r.psl.toFixed(1);$('rCat').innerHTML=getCatBadge(r.psl);
-  [['Симметрия',r.symmetry,'#4ecdc4'],['IPD',r.ipd_score,'#4a9eff'],['Нос',r.nose_width_score,'#a855f7'],['Рот',r.mouth_score,'#ff6b9d'],['Челюсть',r.jaw,'#f7c948'],['Золотое ↕',r.gold_vert,'#4ecdc4'],['Глаза ↔',r.gold_horiz,'#4a9eff'],['Наклон',r.tilt_score,'#a855f7']].forEach(([n,v,c])=>{
-  });let mh='';[['Симметрия',r.symmetry,'#4ecdc4'],['IPD',r.ipd_score,'#4a9eff'],['Нос',r.nose_width_score,'#a855f7'],['Рот',r.mouth_score,'#ff6b9d'],['Челюсть',r.jaw,'#f7c948'],['Золотое ↕',r.gold_vert,'#4ecdc4'],['Глаза ↔',r.gold_horiz,'#4a9eff'],['Наклон',r.tilt_score,'#a855f7']].forEach(([n,v,c])=>{mh+=`<div class="metric"><div class="name">${n}</div><div class="bar"><div class="fill" style="width:${v}%;background:${c}"></div></div><div class="val" style="color:${c}">${v}%</div></div>`});$('rMetrics').innerHTML=mh;
+  let mh='';
+  [['Симметрия',r.symmetry,'#4ecdc4'],['IPD',r.ipd_score,'#4a9eff'],['Нос',r.nose_width_score,'#a855f7'],['Рот',r.mouth_score,'#ff6b9d'],['Челюсть',r.jaw,'#f7c948'],['Золотое ↕',r.gold_vert,'#4ecdc4'],['Глаза ↔',r.gold_horiz,'#4a9eff'],['Наклон',r.tilt_score,'#a855f7']].forEach(([n,v,c])=>{mh+='<div class="metric"><div class="name">'+n+'</div><div class="bar"><div class="fill" style="width:'+v+'%;background:'+c+'"></div></div><div class="val" style="color:'+c+'">'+v+'%</div></div>'});
+  $('rMetrics').innerHTML=mh;
   const tips=generateTips(r),roasts=generateRoast(r);
   let th=tips.map(t=>'✅ '+t).join('<br>');if(roasts.length)th+='<br><br>'+roasts.map(t=>'<span style="color:var(--red)">🔥 '+t+'</span>').join('<br>');$('rTips').innerHTML=th;
   if(myData){
