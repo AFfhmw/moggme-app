@@ -3,7 +3,56 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
 app.use(express.static(path.join(__dirname)));
+
+// In-memory storage (resets on restart, acceptable for free tier)
+const scores = []; // {psl, symmetry, ts}
+const heartbeats = new Map(); // sessionId -> lastSeen timestamp
+
+// Save a face analysis score
+app.post('/api/score', (req, res) => {
+  const { psl, symmetry } = req.body;
+  if (typeof psl !== 'number' || psl < 0 || psl > 10) return res.json({ ok: false });
+  scores.push({ psl, symmetry: symmetry || 0, ts: Date.now() });
+  // Keep last 10000 scores
+  if (scores.length > 10000) scores.splice(0, scores.length - 10000);
+  res.json({ ok: true, total: scores.length });
+});
+
+// Get stats: average PSL, total measurements, total unique users
+app.get('/api/stats', (req, res) => {
+  const total = scores.length;
+  if (total === 0) return res.json({ ok: true, avgPsl: 0, total: 0, totalUsers: 0 });
+  const sum = scores.reduce((a, s) => a + s.psl, 0);
+  const avgPsl = Math.round(sum / total * 10) / 10;
+  // Unique users estimate: use userId from query or just count total
+  const totalUsers = heartbeats.size;
+  res.json({ ok: true, avgPsl, total, totalUsers });
+});
+
+// Heartbeat: client pings every 30s
+app.post('/api/heartbeat', (req, res) => {
+  const { sid } = req.body;
+  if (!sid) return res.json({ ok: false });
+  heartbeats.set(sid, Date.now());
+  // Cleanup old heartbeats (>90s)
+  const now = Date.now();
+  for (const [k, v] of heartbeats) {
+    if (now - v > 90000) heartbeats.delete(k);
+  }
+  res.json({ ok: true, online: heartbeats.size });
+});
+
+// Get online count
+app.get('/api/online', (req, res) => {
+  const now = Date.now();
+  let count = 0;
+  for (const [k, v] of heartbeats) {
+    if (now - v < 90000) count++;
+  }
+  res.json({ ok: true, online: count });
+});
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));

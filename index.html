@@ -242,6 +242,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
 <div class="scr" id="sTop">
   <div class="header"><h1>🏆 <span>Топ игроков</span></h1></div>
   <div style="padding:0 12px">
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <div class="pill" style="flex:1"><div class="v" id="avgPsl">—</div><div class="l">Средний PSL</div></div>
+      <div class="pill" style="flex:1"><div class="v" id="totalMeas">0</div><div class="l">Всего замеров</div></div>
+      <div class="pill" style="flex:1"><div class="v" id="onlineCount" style="color:var(--green)">0</div><div class="l">Сейчас онлайн</div></div>
+    </div>
     <div class="tab-bar">
       <div class="tab on" onclick="switchLBTab(this,'elo')">🏅 ELO</div>
       <div class="tab" onclick="switchLBTab(this,'psl')">🎯 PSL</div>
@@ -294,6 +299,24 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
 <script>
 const $=id=>document.getElementById(id);
 let currentUser=null,myData=null,leaderboard=[],faceMeshReady=null,analyzingBusy=false,lbTab='elo';
+const API=location.origin;
+const SESSION_ID='s_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+
+// === ONLINE HEARTBEAT ===
+async function sendHeartbeat(){
+  try{await fetch(API+'/api/heartbeat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sid:SESSION_ID})})}catch(e){}
+}
+async function fetchOnline(){
+  try{const r=await fetch(API+'/api/online');const d=await r.json();if(d.ok)$('onlineCount').textContent=d.online}catch(e){}
+}
+async function fetchStats(){
+  try{const r=await fetch(API+'/api/stats');const d=await r.json();if(d.ok){$('avgPsl').textContent=d.avgPsl?d.avgPsl.toFixed(1):'—';$('totalMeas').textContent=d.total||0}}catch(e){}
+}
+async function postScore(psl,symmetry){
+  try{await fetch(API+'/api/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({psl,symmetry})})}catch(e){}
+}
+sendHeartbeat();fetchOnline();fetchStats();
+setInterval(()=>{sendHeartbeat();fetchOnline();fetchStats()},30000);
 
 // === AUTH ===
 document.querySelectorAll('.nav .n').forEach(n=>{
@@ -302,6 +325,7 @@ document.querySelectorAll('.nav .n').forEach(n=>{
     n.classList.add('on');
     document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
     $(n.dataset.s).classList.add('on');
+    if(n.dataset.s==='sTop'){fetchStats();fetchOnline();renderLB()}
   };
 });
 
@@ -476,7 +500,7 @@ function renderAchievements(){
 
 // === LEADERBOARD ===
 function getAllUsers(){const u=getUsers();return Object.values(u).filter(x=>x.nickname)}
-function switchLBTab(el,tab){lbTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderLB()}
+function switchLBTab(el,tab){lbTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderLB();fetchStats();fetchOnline()}
 
 function renderLB(){
   const users=getAllUsers();
@@ -686,6 +710,7 @@ function showResult(r){
     myData.history.push({date:today,psl:r.psl,symmetry:r.symmetry});
     myData.coins=(myData.coins||0)+10;
     setUserData(currentUser,myData);
+    postScore(r.psl,r.symmetry);
     checkAchievements();updateProfileUI();
     toast('+10 🪙 за анализ!');
   }
