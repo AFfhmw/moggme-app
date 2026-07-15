@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: moggme-app
+    runtime: node
+    repo: https://github.com/AFfhmw/moggme-app
+    branch: master
+    buildCommand: npm install
+    startCommand: node server.js
+    plan: starter
+    region: frankfurt
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
