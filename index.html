@@ -3,21 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>moggme</title>
+<title>moggme — AI Face Rating</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a14;--bg2:#12122a;--bd:#1e1e3a;--gold:#f7c948;--red:#ff6b6b;--green:#4ecdc4;--purple:#a855f7;--pink:#ff6b9d;--blue:#4a9eff;--text:#e0d8c8;--dim:#5a5a7a}
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);user-select:none;-webkit-user-select:none}
-.scr{position:fixed;inset:0;z-index:1;display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+:root{--bg:#0a0a14;--bg2:#12122a;--bg3:#1a1a35;--bd:#1e1e3a;--gold:#f7c948;--gold2:#c8940a;--red:#ff6b6b;--green:#4ecdc4;--purple:#a855f7;--pink:#ff6b9d;--blue:#4a9eff;--text:#e0d8c8;--dim:#5a5a7a;--radius:12px}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--text);user-select:none;-webkit-user-select:none}
+.scr{position:fixed;inset:0;z-index:1;display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
 .scr.on{display:flex}
 .scr>div{padding:12px;width:100%;max-width:480px;margin:0 auto}
-.b{padding:10px 18px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:transform .08s;display:inline-flex;align-items:center;gap:6px}
+.b{padding:10px 18px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:transform .08s;display:inline-flex;align-items:center;gap:6px;touch-action:manipulation}
 .b:active{transform:scale(.93)}
-.bg{background:linear-gradient(135deg,var(--gold),#c8940a);color:#0a0a14}
+.bg{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a14}
 .bd{background:var(--bd);color:#aaa}
 .br{background:linear-gradient(135deg,var(--red),#ee5a24);color:#fff}
 .bp{background:linear-gradient(135deg,var(--purple),#7c4dff);color:#fff}
-.card{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:8px}
+.bgr{background:linear-gradient(135deg,var(--green),#2ecc71);color:#0a0a14}
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--radius);padding:14px;margin-bottom:8px}
 .card h3{font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .card .sub{font-size:10px;color:var(--dim)}
 .pill{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:5px 10px;text-align:center;min-width:60px}
@@ -28,6 +30,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
 .nav .n.on{color:var(--gold)}
 .nav .n .ni{font-size:18px;display:block;margin-bottom:1px}
 .psl-ring{width:120px;height:120px;border-radius:50%;border:6px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-direction:column;margin:0 auto 12px;position:relative}
+.psl-ring.glow{border-color:var(--gold);box-shadow:0 0 20px rgba(247,201,72,.2)}
 .psl-ring .v{font-size:36px;font-weight:900;color:var(--gold)}
 .psl-ring .l{font-size:10px;color:var(--dim)}
 .metric{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd)}
@@ -65,7 +68,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
 .battle-card .loser{color:var(--dim);text-decoration:line-through}
 .toast{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);background:rgba(247,201,72,.95);color:#0a0a14;padding:8px 16px;border-radius:8px;font-weight:700;font-size:12px;z-index:100;pointer-events:none;animation:ta 1.8s ease-out forwards}
 @keyframes ta{0%{opacity:0;transform:translate(-50%,-50%) scale(.85)}7%{opacity:1;transform:translate(-50%,-50%) scale(1)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%)}}
-.ref-link{background:var(--bd);border-radius:8px;padding:10px;font-size:11px;word-break:break-all;color:var(--green);margin:8px 0;cursor:pointer}
 .photo-preview{width:100%;max-width:300px;border-radius:12px;margin:8px auto;display:block}
 .analyzing{text-align:center;padding:30px}
 .analyzing .spinner{width:40px;height:40px;border:3px solid var(--bd);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 10px}
@@ -75,14 +77,31 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
 .cat-mid{background:rgba(247,201,72,.15);color:var(--gold)}
 .cat-high{background:rgba(78,205,196,.15);color:var(--green)}
 .cat-elite{background:rgba(168,85,247,.15);color:var(--purple)}
-.stars-badge{display:inline-flex;align-items:center;gap:2px;font-size:11px;color:var(--gold)}
-.vip-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;background:linear-gradient(135deg,var(--gold),#c8940a);color:#0a0a14;font-weight:700}
-.plat-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:700}
 .header{padding:12px;text-align:center}
 .header h1{font-size:20px;font-weight:900}
 .header h1 span{color:var(--gold)}
 .empty{text-align:center;padding:30px;color:var(--dim);font-size:12px}
 .annotated{width:100%;max-width:300px;border-radius:12px;margin:8px auto;display:block}
+.input{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--text);font-size:13px;outline:none;transition:border .15s}
+.input:focus{border-color:var(--gold)}
+.ref-link{background:var(--bd);border-radius:8px;padding:10px;font-size:11px;word-break:break-all;color:var(--green);margin:8px 0;cursor:pointer}
+.ach-card{display:flex;align-items:center;gap:10px;padding:8px;margin:3px 0;background:var(--bg2);border:1px solid var(--bd);border-radius:8px}
+.ach-card.done{border-color:var(--gold);background:rgba(247,201,72,.05)}
+.ach-card .ai{font-size:24px;opacity:.4}
+.ach-card.done .ai{opacity:1}
+.ach-card .an{flex:1;font-size:11px;font-weight:700}
+.ach-card .ad{font-size:9px;color:var(--dim)}
+.ach-card .ar{font-size:10px;color:var(--gold);font-weight:700}
+.tab-bar{display:flex;gap:4px;margin-bottom:10px;overflow-x:auto;padding-bottom:4px}
+.tab{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:var(--bg2);border:1px solid var(--bd);white-space:nowrap;transition:all .15s}
+.tab.on{background:var(--gold);color:#0a0a14;border-color:var(--gold)}
+.skill-tree{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.skill{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:8px;text-align:center;cursor:pointer;transition:all .15s}
+.skill.unlocked{border-color:var(--green);background:rgba(78,205,196,.08)}
+.skill.locked{opacity:.4}
+.skill .sk-icon{font-size:20px;margin-bottom:4px}
+.skill .sk-name{font-size:9px;font-weight:700}
+.skill .sk-cost{font-size:8px;color:var(--gold)}
 </style>
 </head>
 <body>
@@ -95,17 +114,51 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   <div class="n" data-s="sShop"><div class="ni">🛒</div>Магазин</div>
 </div>
 
-<div class="scr on" id="sProfile">
-  <div class="header"><h1>👤 <span>moggme</span></h1></div>
+<!-- AUTH -->
+<div class="scr on" id="sAuth">
+  <div style="max-width:380px;margin:0 auto;padding:40px 16px">
+    <div style="text-align:center;margin-bottom:30px">
+      <div style="font-size:60px;margin-bottom:8px">🎯</div>
+      <h1 style="font-size:28px;font-weight:900"><span style="color:var(--gold)">moggme</span></h1>
+      <div style="font-size:12px;color:var(--dim);margin-top:4px">AI Face Rating — Узнай свой PSL</div>
+    </div>
+    <div id="authLogin">
+      <div class="card">
+        <h3>🔑 Вход</h3>
+        <input id="loginNick" class="input" placeholder="Никнейм" style="margin-bottom:8px">
+        <input id="loginPass" class="input" type="password" placeholder="Пароль" style="margin-bottom:10px">
+        <button class="b bg" style="width:100%;justify-content:center" onclick="doLogin()">Войти</button>
+        <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--dim)">
+          Нет аккаунта? <a href="#" style="color:var(--gold)" onclick="showReg()">Зарегистрироваться</a>
+        </div>
+      </div>
+    </div>
+    <div id="authReg" style="display:none">
+      <div class="card">
+        <h3>🆕 Регистрация</h3>
+        <input id="regNick" class="input" placeholder="Никнейм (2-20 символов)" style="margin-bottom:8px">
+        <input id="regPass" class="input" type="password" placeholder="Пароль (4+ символов)" style="margin-bottom:10px">
+        <button class="b bg" style="width:100%;justify-content:center" onclick="doReg()">Создать аккаунт</button>
+        <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--dim)">
+          Уже есть аккаунт? <a href="#" style="color:var(--gold)" onclick="showLogin()">Войти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="scr" id="sProfile">
+  <div class="header"><h1>👤 <span id="pTitle">Профиль</span></h1></div>
   <div style="padding:0 12px">
     <div class="card" id="profileCard">
       <div style="display:flex;align-items:center;gap:12px">
         <div style="width:50px;height:50px;border-radius:50%;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:24px" id="avatar">👤</div>
         <div style="flex:1">
-          <div style="font-size:14px;font-weight:700" id="pNick">Загрузка...</div>
+          <div style="font-size:14px;font-weight:700" id="pNick">—</div>
           <div style="font-size:10px;color:var(--dim)" id="pStatus"></div>
         </div>
-        <div class="stars-badge" id="pStars">⭐ 0</div>
+        <button class="b bd" onclick="doLogout()" style="font-size:10px;padding:6px 10px">🚪 Выйти</button>
       </div>
       <div style="display:flex;gap:8px;margin-top:10px">
         <div class="pill" style="flex:1"><div class="v" id="pElo">1000</div><div class="l">ELO</div></div>
@@ -116,12 +169,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
     </div>
     <div class="card" id="pslCard" style="display:none">
       <h3>🎯 PSL Рейтинг</h3>
-      <div class="psl-ring"><div class="v" id="pslVal">-</div><div class="l">PSL / 8.0</div></div>
+      <div class="psl-ring glow"><div class="v" id="pslVal">-</div><div class="l">PSL / 8.0</div></div>
       <div id="pslCat" style="text-align:center;margin-bottom:8px"></div>
       <div id="pslMetrics"></div>
     </div>
     <div class="card"><h3>📈 Прогресс</h3><div id="progressList" class="empty">Нет замеров</div></div>
     <div class="card"><h3>📋 Квесты</h3><div id="questList" class="empty">Загрузка...</div></div>
+    <div class="card">
+      <h3>🏆 Достижения</h3>
+      <div id="achList" class="empty">Загрузка...</div>
+    </div>
     <div class="card">
       <h3>🔗 Реферал</h3>
       <div class="sub">Приглашай друзей — +150 монет за каждого!</div>
@@ -135,6 +192,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   </div>
 </div>
 
+<!-- PHOTO -->
 <div class="scr" id="sPhoto">
   <div class="header"><h1>📸 <span>Оценить лицо</span></h1></div>
   <div style="padding:0 12px">
@@ -157,7 +215,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
     <div class="card" id="resultCard" style="display:none">
       <h3>🎯 Результат</h3>
       <canvas id="annotatedCanvas" class="annotated" style="display:none"></canvas>
-      <div class="psl-ring"><div class="v" id="rPsl">-</div><div class="l">PSL / 8.0</div></div>
+      <div class="psl-ring glow"><div class="v" id="rPsl">-</div><div class="l">PSL / 8.0</div></div>
       <div id="rCat" style="text-align:center;margin-bottom:8px"></div>
       <div id="rMetrics"></div>
       <div id="rTips" style="margin-top:8px;font-size:10px;color:var(--dim);line-height:1.5"></div>
@@ -180,11 +238,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   </div>
 </div>
 
+<!-- TOP -->
 <div class="scr" id="sTop">
   <div class="header"><h1>🏆 <span>Топ игроков</span></h1></div>
-  <div style="padding:0 12px"><div class="card"><h3>🏅 Рейтинг по ELO</h3><div id="lbList" class="empty">Загрузка...</div></div><div style="height:70px"></div></div>
+  <div style="padding:0 12px">
+    <div class="tab-bar">
+      <div class="tab on" onclick="switchLBTab(this,'elo')">🏅 ELO</div>
+      <div class="tab" onclick="switchLBTab(this,'psl')">🎯 PSL</div>
+    </div>
+    <div class="card"><div id="lbList" class="empty">Загрузка...</div></div>
+    <div style="height:70px"></div>
+  </div>
 </div>
 
+<!-- BATTLE -->
 <div class="scr" id="sBattle">
   <div class="header"><h1>⚔️ <span>Батлы</span></h1></div>
   <div style="padding:0 12px">
@@ -192,7 +259,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
       <h3>🎮 Новый батл</h3>
       <div class="sub">Введи ник противника</div>
       <div style="display:flex;gap:6px;margin-top:8px">
-        <input id="battleInput" placeholder="Ник противника" style="flex:1;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--text);font-size:12px;outline:none">
+        <input id="battleInput" class="input" placeholder="Ник противника">
         <button class="b br" onclick="startBattle()">⚔️</button>
       </div>
     </div>
@@ -202,6 +269,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   </div>
 </div>
 
+<!-- SHOP -->
 <div class="scr" id="sShop">
   <div class="header"><h1>🛒 <span>Магазин</span></h1></div>
   <div style="padding:0 12px">
@@ -213,13 +281,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
       <div class="shop-item" onclick="buyElo(500,2000)"><div class="si">🚀</div><div class="inf"><div class="nm">+500 ELO</div><div class="ds">Мега-буст</div></div><div class="price">🪙 2000</div></div>
     </div>
     <div class="card">
-      <h3>⭐ Telegram Stars</h3>
-      <div class="shop-item" onclick="buyStars('premium_report',1)"><div class="si">💎</div><div class="inf"><div class="nm">Premium-отчёт</div><div class="ds">Перцентиль, потенциал, разбор</div></div><div class="price">1 ⭐</div></div>
-      <div class="shop-item" onclick="buyStars('eternal_premium',88)"><div class="si">♾</div><div class="inf"><div class="nm">Вечный Premium</div><div class="ds">Навсегда</div></div><div class="price">88 ⭐</div></div>
-      <div class="shop-item" onclick="buyStars('vip_30',99)"><div class="si">👑</div><div class="inf"><div class="nm">VIP 30 дней</div><div class="ds">x1.5 монет, +200/день</div></div><div class="price">99 ⭐</div></div>
-      <div class="shop-item" onclick="buyStars('coins_pack',25)"><div class="si">🪙</div><div class="inf"><div class="nm">1000 монет</div></div><div class="price">25 ⭐</div></div>
-      <div class="shop-item" onclick="buyStars('elo_boost',75)"><div class="si">🚀</div><div class="inf"><div class="nm">ELO Буст +300</div></div><div class="price">75 ⭐</div></div>
-      <div class="shop-item" onclick="buyStars('platinum_nick',150)"><div class="si">💠</div><div class="inf"><div class="nm">Платиновый ник</div><div class="ds">Навсегда</div></div><div class="price">150 ⭐</div></div>
+      <h3>💎 Premium за монеты</h3>
+      <div class="shop-item" onclick="buyPremium('premium_report',200)"><div class="si">💎</div><div class="inf"><div class="nm">Premium-отчёт</div><div class="ds">Перцентиль, потенциал, разбор</div></div><div class="price">🪙 200</div></div>
+      <div class="shop-item" onclick="buyPremium('vip_30',3000)"><div class="si">👑</div><div class="inf"><div class="nm">VIP 30 дней</div><div class="ds">x1.5 монет, +200/день</div></div><div class="price">🪙 3000</div></div>
+      <div class="shop-item" onclick="buyPremium('platinum',15000)"><div class="si">💠</div><div class="inf"><div class="nm">Платиновый ник</div><div class="ds">Навсегда, все VIP-бонусы</div></div><div class="price">🪙 15000</div></div>
     </div>
     <div style="height:70px"></div>
   </div>
@@ -228,11 +293,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.js" crossorigin="anonymous"></script>
 <script>
 const $=id=>document.getElementById(id);
-const TG=window.Telegram?.WebApp;
-if(TG){try{TG.ready();TG.expand();TG.setHeaderColor('#0a0a14');TG.setBackgroundColor('#0a0a14')}catch(e){}}
-const API='https://moggme-bot.vercel.app';
-let myData=null,leaderboard=[],faceMeshReady=null,analyzingBusy=false;
+let currentUser=null,myData=null,leaderboard=[],faceMeshReady=null,analyzingBusy=false,lbTab='elo';
 
+// === AUTH ===
 document.querySelectorAll('.nav .n').forEach(n=>{
   n.onclick=()=>{
     document.querySelectorAll('.nav .n').forEach(x=>x.classList.remove('on'));
@@ -243,43 +306,106 @@ document.querySelectorAll('.nav .n').forEach(n=>{
 });
 
 function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),1800)}
-function getUser(){return TG?.initDataUnsafe?.user||{id:0,first_name:'Guest'}}
 
-async function apiCall(method,data={}){
-  try{const r=await fetch(API+'/api/'+method,{method:'POST',headers:{'Content-Type':'application/json','X-Telegram-Init-Data':TG?.initData||''},body:JSON.stringify({user_id:getUser().id,...data})});return await r.json()}catch(e){return null}
+function getUsers(){try{return JSON.parse(localStorage.getItem('moggme_users')||'{}')}catch(e){return{}}}
+function saveUsers(u){localStorage.setItem('moggme_users',JSON.stringify(u))}
+function getUserData(id){const u=getUsers();return u[id]||null}
+function setUserData(id,d){const u=getUsers();u[id]=d;saveUsers(u)}
+
+function showReg(){$('authLogin').style.display='none';$('authReg').style.display=''}
+function showLogin(){$('authReg').style.display='none';$('authLogin').style.display=''}
+
+function doReg(){
+  const nick=($('regNick').value||'').trim();
+  const pass=($('regPass').value||'').trim();
+  if(nick.length<2||nick.length>20){toast('Ник 2-20 символов');return}
+  if(pass.length<4){toast('Пароль 4+ символов');return}
+  const users=getUsers();
+  for(const k in users){if(users[k].nickname&&users[k].nickname.toLowerCase()===nick.toLowerCase()){toast('Ник уже занят');return}}
+  const id='u_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  const data={id,nickname:nick,password:pass,elo:1000,wins:0,losses:0,coins:100,stars:0,last_psl:null,metrics:null,history:[],achievements:[],referrals:0,ref_earned:0,vip:false,platinum:false,premium:false,daily:null,battles:[],created:Date.now()};
+  setUserData(id,data);
+  localStorage.setItem('moggme_current',id);
+  currentUser=id;myData=data;
+  $('nav').style.display='flex';
+  $('sAuth').classList.remove('on');$('sProfile').classList.add('on');
+  document.querySelector('[data-s="sProfile"]').classList.add('on');
+  updateProfileUI();toast('Добро пожаловать, '+nick+'! 🪙 +100 за регистрацию');
 }
 
-async function loadProfile(){
-  const u=getUser();
-  $('pNick').textContent=u.first_name+(u.last_name?' '+u.last_name:'');
-  const c=localStorage.getItem('moggme_'+u.id);
-  if(c){try{myData=JSON.parse(c);updateProfileUI()}catch(e){}}
-  const d=await apiCall('profile');
-  if(d&&d.ok){myData=d;localStorage.setItem('moggme_'+u.id,JSON.stringify(d));updateProfileUI()}
+function doLogin(){
+  const nick=($('loginNick').value||'').trim();
+  const pass=($('loginPass').value||'').trim();
+  if(!nick||!pass){toast('Заполни все поля');return}
+  const users=getUsers();
+  for(const k in users){if(users[k].nickname&&users[k].nickname.toLowerCase()===nick.toLowerCase()&&users[k].password===pass){
+    currentUser=k;myData=users[k];
+    localStorage.setItem('moggme_current',k);
+    $('nav').style.display='flex';
+    $('sAuth').classList.remove('on');$('sProfile').classList.add('on');
+    document.querySelector('[data-s="sProfile"]').classList.add('on');
+    checkDaily();updateProfileUI();return;
+  }}
+  toast('Неверный ник или пароль');
 }
 
+function doLogout(){
+  localStorage.removeItem('moggme_current');
+  currentUser=null;myData=null;
+  $('nav').style.display='none';
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  $('sAuth').classList.add('on');
+}
+
+function checkDaily(){
+  if(!myData)return;
+  const today=new Date().toDateString();
+  if(myData.daily!==today){
+    myData.daily=today;
+    const bonus=myData.vip||myData.platinum?200:50;
+    myData.coins+=bonus;
+    setUserData(currentUser,myData);
+    setTimeout(()=>toast('Ежедневный бонус: +'+bonus+' 🪙'),500);
+  }
+}
+
+// === INIT ===
+(function(){
+  $('nav').style.display='none';
+  const cur=localStorage.getItem('moggme_current');
+  if(cur){
+    const d=getUserData(cur);
+    if(d){currentUser=cur;myData=d;$('nav').style.display='flex';
+      document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+      $('sProfile').classList.add('on');
+      document.querySelector('[data-s="sProfile"]').classList.add('on');
+      checkDaily();updateProfileUI();renderLB();}
+  }
+})();
+
+// === PROFILE ===
 function updateProfileUI(){
   if(!myData)return;
-  $('pNick').textContent=myData.nickname||'Игрок';
+  $('pTitle').textContent=myData.nickname;
+  $('pNick').textContent=myData.nickname;
   $('pElo').textContent=myData.elo||1000;
   $('pWins').textContent=myData.wins||0;
   $('pLosses').textContent=myData.losses||0;
   $('pCoins').textContent=myData.coins||0;
-  $('pStars').textContent='⭐ '+(myData.stars||0);
   $('sCoins').textContent=myData.coins||0;
-  let s='';if(myData.platinum)s='<span class="plat-badge">💠 PLATINUM</span>';else if(myData.vip)s='<span class="vip-badge">👑 VIP</span>';$('pStatus').innerHTML=s;
+  let s='';if(myData.platinum)s='<span style="color:var(--blue);font-weight:700">💠 PLATINUM</span>';else if(myData.vip)s='<span style="color:var(--gold);font-weight:700">👑 VIP</span>';$('pStatus').innerHTML=s;
   if(myData.last_psl){
-    $('pslCard').style.display='';$('pslVal').textContent=myData.last_psl;$('pslCat').innerHTML=getCatBadge(myData.last_psl);
+    $('pslCard').style.display='';$('pslVal').textContent=myData.last_psl.toFixed(1);$('pslCat').innerHTML=getCatBadge(myData.last_psl);
     const m=myData.metrics||{};let mh='';
-    [['Симметрия',m.symmetry,'#4ecdc4'],['Межзрачковое',m.ipd,'#4a9eff'],['Нос',m.nose,'#a855f7'],['Рот',m.mouth,'#ff6b9d'],['Челюсть',m.jaw,'#f7c948'],['Золотое ↕',m.gold_vert,'#4ecdc4'],['Глаза ↔',m.gold_horiz,'#4a9eff'],['Наклон глаз',m.tilt,'#a855f7']].forEach(([n,v,c])=>{
+    [['Симметрия',m.symmetry,'#4ecdc4'],['Межзрачковое',m.ipd_score,'#4a9eff'],['Нос',m.nose_width_score,'#a855f7'],['Рот',m.mouth_score,'#ff6b9d'],['Челюсть',m.jaw,'#f7c948'],['Золотое ↕',m.gold_vert,'#4ecdc4'],['Глаза ↔',m.gold_horiz,'#4a9eff'],['Наклон глаз',m.tilt_score,'#a855f7']].forEach(([n,v,c])=>{
       mh+=`<div class="metric"><div class="name">${n}</div><div class="bar"><div class="fill" style="width:${v||0}%;background:${c}"></div></div><div class="val" style="color:${c}">${v||0}%</div></div>`;
     });$('pslMetrics').innerHTML=mh;
-  }
-  if(myData.history&&myData.history.length>0){let ph='';myData.history.slice(-5).reverse().forEach(h=>{ph+=`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bd);font-size:11px"><span>${h.date||'Недавно'}</span><span style="color:var(--gold)">PSL ${h.psl}</span><span>Симм. ${h.symmetry}%</span></div>`});$('progressList').innerHTML=ph}
-  $('refLink').textContent=`https://t.me/moggme?start=ref_${myData.user_id||getUser().id}`;
+  }else{$('pslCard').style.display='none'}
+  if(myData.history&&myData.history.length>0){let ph='';myData.history.slice(-5).reverse().forEach(h=>{ph+=`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bd);font-size:11px"><span>${h.date||'Недавно'}</span><span style="color:var(--gold)">PSL ${h.psl.toFixed(1)}</span><span>Симм. ${h.symmetry}%</span></div>`});$('progressList').innerHTML=ph}
+  $('refLink').textContent=location.origin+'/?ref='+myData.id;
   $('refTotal').textContent=myData.referrals||0;
-  $('refEarned').textContent=(myData.referrals||0)*150;
-  renderQuests();
+  $('refEarned').textContent=myData.ref_earned||0;
+  renderQuests();renderAchievements();renderLB();
 }
 
 function getCatBadge(psl){
@@ -290,25 +416,84 @@ function getCatBadge(psl){
   return'<span class="cat-badge cat-elite">👑 Элитный</span>';
 }
 
+const QUESTS=[
+  {i:'📸',n:'Отправь фото',r:10,key:'photo'},
+  {i:'⚔️',n:'Победи в батле',r:20,key:'battle_win'},
+  {i:'🎯',n:'PSL 5.0+',r:30,key:'psl_high'},
+  {i:'🔁',n:'2 фото подряд',r:15,key:'photo_count'},
+  {i:'🏆',n:'2 победы',r:40,key:'battle_win_count'},
+  {i:'⭐',n:'Симметрия >80%',r:25,key:'symmetry'}
+];
+
 function renderQuests(){
-  let h='';[{i:'📸',n:'Отправь фото',r:10},{i:'⚔️',n:'Победи в батле',r:20},{i:'🎯',n:'PSL 5.0+',r:30},{i:'🔁',n:'2 фото',r:15},{i:'🏆',n:'2 победы',r:40},{i:'⭐',n:'Симметрия >80%',r:25}].forEach(q=>{h+=`<div class="quest"><div class="qi">${q.i}</div><div class="inf"><div class="qn">${q.n}</div><div class="qd">Награда</div></div><div class="qr">${q.r} 🪙</div></div>`});$('questList').innerHTML=h;
+  let h='';QUESTS.forEach(q=>{h+=`<div class="quest"><div class="qi">${q.i}</div><div class="inf"><div class="qn">${q.n}</div><div class="qd">Награда</div></div><div class="qr">${q.r} 🪙</div></div>`});$('questList').innerHTML=h;
 }
 
-async function loadLeaderboard(){
-  const d=await apiCall('leaderboard');
-  if(d&&d.ok&&d.leaderboard){leaderboard=d.leaderboard;renderLB()}else{leaderboard=[{nick:'TapKing',elo:2500},{nick:'FacePro',elo:2200},{nick:'PSLMaster',elo:2000},{nick:'BeautyBot',elo:1800},{nick:'SymmetryGod',elo:1600},{nick:'JawChamp',elo:1400},{nick:'ProGamer',elo:1200},{nick:'NoobMaster',elo:1100},{nick:'Newbie',elo:900}];renderLB()}
+const ACHIEVEMENTS=[
+  {i:'📸',n:'Первый замер',d:'Пройди первый анализ',key:'first_photo',r:50},
+  {i:'🎯',n:'PSL 5.0',d:'Набери PSL 5.0+',key:'psl5',r:100},
+  {i:'🔥',n:'PSL 7.0',d:'Набери PSL 7.0+',key:'psl7',r:500},
+  {i:'👑',n:'Элита',d:'PSL 7.5+',key:'psl75',r:1000},
+  {i:'⚔️',n:'Боец',d:'Выиграй 5 батлов',key:'wins5',r:200},
+  {i:'🏆',n:'Чемпион',d:'Выиграй 20 батлов',key:'wins20',r:1000},
+  {i:'🪙',n:'Копилка',d:'Накопи 5000 монет',key:'coins5k',r:300},
+  {i:'💎',n:'Магнат',d:'Накопи 20000 монет',key:'coins20k',r:1000},
+  {i:'📈',n:'Рост',d:'Рейтинг 1500+',key:'elo1500',r:500},
+  {i:'🌟',n:'Звезда',d:'Рейтинг 2000+',key:'elo2000',r:1000},
+  {i:'🧠',n:'Гений',d:'Симметрия >90%',key:'sym90',r:300},
+  {i:'💀',n:'Урод',d:'PSL < 2.0',key:'ugly',r:100}
+];
+
+function checkAchievements(){
+  if(!myData)return;
+  const a=myData.achievements||[];
+  const add=(key)=>{if(!a.includes(key)){a.push(key);return true}return false};
+  let earned=0;
+  if(myData.history&&myData.history.length>0){if(add('first_photo'))earned+=50}
+  if(myData.last_psl>=5&&add('psl5'))earned+=100;
+  if(myData.last_psl>=7&&add('psl7'))earned+=500;
+  if(myData.last_psl>=7.5&&add('psl75'))earned+=1000;
+  if(myData.wins>=5&&add('wins5'))earned+=200;
+  if(myData.wins>=20&&add('wins20'))earned+=1000;
+  if(myData.coins>=5000&&add('coins5k'))earned+=300;
+  if(myData.coins>=20000&&add('coins20k'))earned+=1000;
+  if(myData.elo>=1500&&add('elo1500'))earned+=500;
+  if(myData.elo>=2000&&add('elo2000'))earned+=1000;
+  if(myData.metrics&&myData.metrics.symmetry>=90&&add('sym90'))earned+=300;
+  if(myData.last_psl&&myData.last_psl<2&&add('ugly'))earned+=100;
+  myData.achievements=a;
+  if(earned>0){myData.coins+=earned;setUserData(currentUser,myData);toast('🏅 Достижение! +'+earned+' 🪙')}
 }
+
+function renderAchievements(){
+  if(!myData)return;
+  const a=myData.achievements||[];
+  let h='';ACHIEVEMENTS.forEach(ch=>{
+    const done=a.includes(ch.key);
+    h+=`<div class="ach-card${done?' done':''}"><div class="ai">${ch.i}</div><div style="flex:1"><div class="an">${ch.n}</div><div class="ad">${ch.d}</div></div><div class="ar">${done?'✅':'🪙 '+ch.r}</div></div>`;
+  });$('achList').innerHTML=h;
+}
+
+// === LEADERBOARD ===
+function getAllUsers(){const u=getUsers();return Object.values(u).filter(x=>x.nickname)}
+function switchLBTab(el,tab){lbTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderLB()}
 
 function renderLB(){
-  const u=getUser();let h='';
-  leaderboard.forEach((p,i)=>{
-    const me=p.user_id===u.id||p.nick===(myData?.nickname||'');
+  const users=getAllUsers();
+  const u=getUser();
+  if(lbTab==='elo'){users.sort((a,b)=>(b.elo||1000)-(a.elo||1000))}
+  else{users.sort((a,b)=>(b.last_psl||0)-(a.last_psl||0))}
+  let h='';users.slice(0,50).forEach((p,i)=>{
+    const me=p.id===currentUser;
     const m=['🥇','🥈','🥉'][i]||'';
-    h+=`<div class="lb-row${me?' me':''}"><div class="pos${i<3?' t':''}">${i+1}</div><div style="font-size:16px">${m||'🎮'}</div><div class="nick">${p.nick||p.nickname||'Игрок'}</div><div class="elo">${p.elo}</div></div>`;
+    const val=lbTab==='elo'?(p.elo||1000):((p.last_psl||0).toFixed(1)+' PSL');
+    h+=`<div class="lb-row${me?' me':''}"><div class="pos${i<3?' t':''}">${i+1}</div><div style="font-size:16px">${m||'🎮'}</div><div class="nick">${p.nickname}</div><div class="elo">${val}</div></div>`;
   });$('lbList').innerHTML=h||'<div class="empty">Пока нет данных</div>';
 }
 
-// ===== MEDIAPIPE FACE MESH =====
+function getUser(){return currentUser?getUserData(currentUser):null}
+
+// === MEDIAPIPE FACE MESH ===
 function ensureFaceMesh(){
   if(faceMeshReady)return faceMeshReady;
   if(typeof FaceMesh==='undefined'){faceMeshReady=Promise.reject(new Error('CDN not loaded'));return faceMeshReady}
@@ -376,9 +561,9 @@ function computeMetrics(pts){
   const eye_avg=(lew+rew)/2, eye_d=dist(pts[133],pts[362]);
   let gold_horiz_score=eye_d>0?(1-Math.min(Math.abs((eye_avg/eye_d)-1.0),1.0)):0.5;
 
-  // Canthal tilt
-  const lt=Math.atan2(pts[133][1]-pts[33][1],pts[133][0]-pts[33][0])*180/Math.PI;
-  const rt=Math.atan2(pts[263][1]-pts[362][1],pts[263][0]-pts[362][0])*180/Math.PI;
+  // Canthal tilt — EXACT bot formula
+  const lt=Math.atan2(pts[33][1]-pts[133][1],pts[33][0]-pts[133][0])*180/Math.PI;
+  const rt=Math.atan2(pts[263][1]-pts[362][1],-(pts[263][0]-pts[362][0]))*180/Math.PI;
   const canthal_tilt=Math.round((lt+rt)/2*10)/10;
   const tilt_score=Math.max(0,1-Math.abs(canthal_tilt-6.0)/10);
 
@@ -401,7 +586,6 @@ function drawAnalysis(canvas,img,pts,r){
   ctx.lineWidth=2;
   lines.forEach(([a,b,c])=>{ctx.strokeStyle=c;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()});
   [1,10,152,234,454,58,288,468,473,98,327,61,291,168,33,133,362,263].forEach(i=>{const pt=p(i);ctx.fillStyle='rgba(0,255,0,0.6)';ctx.beginPath();ctx.arc(pt[0],pt[1],2,0,Math.PI*2);ctx.fill()});
-  // Score badge
   const bw=w<400?60:80,bh=w<400?28:34,bx=w-bw-10,by=10;
   ctx.fillStyle='rgba(10,10,20,0.85)';ctx.fillRect(bx,by,bw,bh);
   ctx.strokeStyle='rgba(247,201,72,0.6)';ctx.lineWidth=1;ctx.strokeRect(bx,by,bw,bh);
@@ -435,7 +619,7 @@ function generateRoast(r){
   return roasts;
 }
 
-// ===== PHOTO =====
+// === PHOTO ===
 let photoDataUrl=null;
 $('fileInput').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
@@ -493,36 +677,131 @@ function showResult(r){
   let th=tips.map(t=>'✅ '+t).join('<br>');
   if(roasts.length)th+='<br><br>'+roasts.map(t=>'<span style="color:var(--red)">🔥 '+t+'</span>').join('<br>');
   $('rTips').innerHTML=th;
-  if(TG?.sendData){try{TG.sendData(JSON.stringify({action:'face_result',psl:r.psl,symmetry:r.symmetry,jaw:r.jaw,ipd:r.ipd_score,nose:r.nose_width_score,mouth:r.mouth_score,gold_vert:r.gold_vert,gold_horiz:r.gold_horiz,tilt:r.tilt_score}))}catch(e){}}
+
+  // Save to user
+  if(myData){
+    myData.last_psl=r.psl;myData.metrics=r;
+    const today=new Date().toISOString().split('T')[0];
+    if(!myData.history)myData.history=[];
+    myData.history.push({date:today,psl:r.psl,symmetry:r.symmetry});
+    myData.coins=(myData.coins||0)+10;
+    setUserData(currentUser,myData);
+    checkAchievements();updateProfileUI();
+    toast('+10 🪙 за анализ!');
+  }
   $('resultCard').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function shareResult(){
-  const t=`🎯 moggme\nPSL: ${$('rPsl').textContent}/8.0\n\nПопробуй оценить своё лицо!`;
-  if(TG?.switchInlineQuery)TG.switchInlineQuery(t);else if(navigator.share)navigator.share({title:'moggme',text:t}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>toast('Скопировано!'));
+  const t='🎯 moggme\nPSL: '+$('rPsl').textContent+'/8.0\n\nПопробуй оценить своё лицо! '+location.origin;
+  if(navigator.share)navigator.share({title:'moggme',text:t}).catch(()=>{});
+  else if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>toast('Скопировано!'));
 }
 
-async function startBattle(){
-  const n=$('battleInput').value.trim();if(!n){toast('Введи ник');return}
-  toast('Батл отправлен!');$('battleInput').value='';
-  const d=await apiCall('battle',{opponent:n});
-  if(d&&d.ok)showBattleResult(d);else setTimeout(()=>{const w=Math.random()>.5;showBattleResult({winner:w?'Ты':n,loser:w?n:'Ты',won:w,psl1:(3+Math.random()*4).toFixed(1),psl2:(3+Math.random()*4).toFixed(1)})},1500);
+// === BATTLES ===
+function calculateEloChange(winnerElo,loserElo,k=32){
+  const expected=1/(1+Math.pow(10,(loserElo-winnerElo)/400));
+  return{newWinner:Math.round(winnerElo+k*(1-expected)),newLoser:Math.round(loserElo+k*(0-(1-expected)))};
 }
+
+function startBattle(){
+  const n=$('battleInput').value.trim();if(!n){toast('Введи ник');return}
+  const users=getUsers();
+  let opponent=null;
+  for(const k in users){if(users[k].nickname&&users[k].nickname.toLowerCase()===n.toLowerCase()&&k!==currentUser){opponent=users[k];break}}
+  if(!opponent){toast('Игрок не найден');return}
+  if(!myData.last_psl||!opponent.last_psl){toast('Оба игрока должны пройти анализ');return}
+  const psl1=myData.last_psl,psl2=opponent.last_psl;
+  const sym1=myData.metrics?.symmetry||0,sym2=opponent.metrics?.symmetry||0;
+  let winnerId,loserId,wp,lp;
+  if(psl1>psl2){winnerId=currentUser;loserId=opponent.id;wp=psl1;lp=psl2}
+  else if(psl2>psl1){winnerId=opponent.id;loserId=currentUser;wp=psl2;lp=psl1}
+  else if(sym1>sym2){winnerId=currentUser;loserId=opponent.id;wp=psl1;lp=psl2}
+  else if(sym2>sym1){winnerId=opponent.id;loserId=currentUser;wp=psl2;lp=psl1}
+  else{toast('Ничья! Одинаковый PSL и симметрия');return}
+  const w=winnerId===currentUser?myData:opponent;
+  const l=winnerId===currentUser?opponent:myData;
+  const{newWinner,newLoser}=calculateEloChange(w.elo||1000,l.elo||1000);
+  w.elo=newWinner;w.wins=(w.wins||0)+1;w.coins=(w.coins||0)+25;
+  l.elo=newLoser;l.losses=(l.losses||0)+1;
+  setUserData(winnerId,w);setUserData(loserId,l);
+  if(winnerId===currentUser){myData=w}else{myData=l}
+  setUserData(currentUser,myData);
+  const won=winnerId===currentUser;
+  showBattleResult({winner:won?myData.nickname:opponent.nickname,loser:won?opponent.nickname:myData.nickname,won,psl1:wp.toFixed(1),psl2:lp.toFixed(1),eloGain:newWinner-(won?1000:0),eloLoss:1000-newLoser});
+  $('battleInput').value='';updateProfileUI();
+}
+
 function autoBattle(){
   toast('Ищу соперника...');
-  setTimeout(()=>{const ns=['TapKing','FacePro','PSLMaster','BeautyBot','SymmetryGod'];const o=ns[Math.floor(Math.random()*ns.length)];const w=Math.random()>.5;showBattleResult({winner:w?'Ты':o,loser:w?o:'Ты',won:w,psl1:(3+Math.random()*4).toFixed(1),psl2:(3+Math.random()*4).toFixed(1)})},1500);
+  const users=getAllUsers().filter(u=>u.id!==currentUser&&u.last_psl);
+  if(!users.length){toast('Нет других игроков с замером');return}
+  const opp=users[Math.floor(Math.random()*users.length)];
+  if(!myData.last_psl){toast('Сначала пройди анализ');return}
+  const psl1=myData.last_psl,psl2=opp.last_psl;
+  const sym1=myData.metrics?.symmetry||0,sym2=opp.metrics?.symmetry||0;
+  let winnerId,loserId,wp,lp;
+  if(psl1>psl2){winnerId=currentUser;loserId=opp.id;wp=psl1;lp=psl2}
+  else if(psl2>psl1){winnerId=opp.id;loserId=currentUser;wp=psl2;lp=psl1}
+  else if(sym1>=sym2){winnerId=currentUser;loserId=opp.id;wp=psl1;lp=psl2}
+  else{winnerId=opp.id;loserId=currentUser;wp=psl2;lp=psl1}
+  const w=winnerId===currentUser?myData:opp;
+  const l=winnerId===currentUser?opp:myData;
+  const{newWinner,newLoser}=calculateEloChange(w.elo||1000,l.elo||1000);
+  w.elo=newWinner;w.wins=(w.wins||0)+1;w.coins=(w.coins||0)+25;
+  l.elo=newLoser;l.losses=(l.losses||0)+1;
+  setUserData(winnerId,w);setUserData(loserId,l);
+  if(winnerId===currentUser){myData=w}else{myData=l}
+  setUserData(currentUser,myData);
+  const won=winnerId===currentUser;
+  showBattleResult({winner:won?myData.nickname:opp.nickname,loser:won?opp.nickname:myData.nickname,won,psl1:wp.toFixed(1),psl2:lp.toFixed(1)});
+  updateProfileUI();
 }
+
 function showBattleResult(r){
   const el=document.createElement('div');el.className='card';
-  el.innerHTML=`<div class="battle-card"><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">Ты</div><div class="${r.won?'winner':'loser'}" style="font-size:14px;font-weight:700">${r.won?'🏆':'💀'} PSL ${r.psl1}</div></div><div class="vs">VS</div><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">${r.winner===r.loser?'?':r.winner==='Ты'?r.loser:r.winner}</div><div class="${!r.won?'winner':'loser'}" style="font-size:14px;font-weight:700">${!r.won?'🏆':'💀'} PSL ${r.psl2}</div></div></div><div style="text-align:center;font-size:12px;font-weight:700;color:${r.won?'var(--green)':'var(--red)'}">${r.won?'Ты победил!':'Ты проиграл'}</div>`;
+  el.innerHTML=`<div class="battle-card"><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">Ты</div><div class="${r.won?'winner':'loser'}" style="font-size:14px;font-weight:700">${r.won?'🏆':'💀'} PSL ${r.psl1}</div></div><div class="vs">VS</div><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">${r.winner===r.loser?'?':r.winner==='Ты'?r.loser:r.winner}</div><div class="${!r.won?'winner':'loser'}" style="font-size:14px;font-weight:700">${!r.won?'🏆':'💀'} PSL ${r.psl2}</div></div></div><div style="text-align:center;font-size:12px;font-weight:700;color:${r.won?'var(--green)':'var(--red)'}">${r.won?'Ты победил! +25 🪙':'Ты проиграл'}</div>`;
   const h=$('battleHistory');if(h.classList.contains('empty'))h.innerHTML='';h.prepend(el);
+  if(!myData.battles)myData.battles=[];
+  myData.battles.unshift({date:new Date().toISOString(),won:r.won,psl1:r.psl1,psl2:r.psl2,opponent:r.winner==='Ты'?r.loser:r.winner});
+  if(myData.battles.length>20)myData.battles=myData.battles.slice(0,20);
+  setUserData(currentUser,myData);
 }
 
-function buyElo(a,p){if((myData?.coins||0)<p){toast('Нужно '+p+' монет');return}toast('+'+a+' ELO!');if(myData)myData.coins-=p;updateProfileUI()}
-function buyStars(i,s){if(TG?.sendData){TG.sendData(JSON.stringify({action:'buy_stars',item:i,stars:s}));toast('Обработка...')}else toast('Доступно только в Telegram')}
-function copyRef(){const l=$('refLink').textContent;if(navigator.clipboard)navigator.clipboard.writeText(l).then(()=>toast('Скопировано!'))}
+// === SHOP ===
+function buyElo(a,p){
+  if((myData?.coins||0)<p){toast('Нужно '+p+' монет');return}
+  myData.coins-=p;myData.elo=(myData.elo||1000)+a;
+  setUserData(currentUser,myData);updateProfileUI();toast('+'+a+' ELO!');
+}
+function buyPremium(item,cost){
+  if((myData?.coins||0)<cost){toast('Нужно '+cost+' монет');return}
+  myData.coins-=cost;
+  if(item==='premium_report')myData.premium=true;
+  else if(item==='vip_30'){myData.vip=true;setTimeout(()=>{myData.vip=false;setUserData(currentUser,myData);toast('VIP истёк')},30*24*60*60*1000)}
+  else if(item==='platinum'){myData.platinum=true;myData.vip=true}
+  setUserData(currentUser,myData);updateProfileUI();toast('Покупка успешна!');
+}
+function copyRef(){const l=myData?location.origin+'/?ref='+myData.id:'';if(navigator.clipboard)navigator.clipboard.writeText(l).then(()=>toast('Скопировано!'))}
 
-loadProfile();loadLeaderboard();setInterval(()=>{loadProfile();loadLeaderboard()},30000);
+// === REFERRAL CHECK ===
+(function(){
+  const params=new URLSearchParams(location.search);
+  const ref=params.get('ref');
+  if(ref&&currentUser&&ref!==currentUser){
+    const users=getUsers();
+    if(users[ref]&&myData){
+      if(!myData._referred){
+        myData._referred=true;myData.coins=(myData.coins||0)+100;
+        users[ref].referrals=(users[ref].referrals||0)+1;
+        users[ref].ref_earned=(users[ref].ref_earned||0)+150;
+        users[ref].coins=(users[ref].coins||0)+150;
+        setUserData(currentUser,myData);saveUsers(users);
+        toast('Реферальная бонус: +100 🪙');
+      }
+    }
+  }
+})();
 </script>
 </body>
 </html>
