@@ -7,58 +7,61 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a14;--bg2:#12122a;--bg3:#1a1a35;--bd:#1e1e3a;--gold:#f7c948;--gold2:#c8940a;--red:#ff6b6b;--green:#4ecdc4;--purple:#a855f7;--pink:#ff6b9d;--blue:#4a9eff;--text:#e0d8c8;--dim:#5a5a7a;--radius:12px}
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--text);user-select:none;-webkit-user-select:none}
+:root{--bg:#0a0a14;--bg2:#12122a;--bd:#1e1e3a;--gold:#f7c948;--gold2:#c8940a;--red:#ff6b6b;--green:#4ecdc4;--purple:#a855f7;--pink:#ff6b9d;--blue:#4a9eff;--text:#e0d8c8;--dim:#5a5a7a;--r:12px}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);user-select:none;-webkit-user-select:none}
 .scr{position:fixed;inset:0;z-index:1;display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
 .scr.on{display:flex}
 .scr>div{padding:12px;width:100%;max-width:480px;margin:0 auto}
-.b{padding:10px 18px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:transform .08s;display:inline-flex;align-items:center;gap:6px;touch-action:manipulation}
-.b:active{transform:scale(.93)}
+.b{padding:10px 18px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;touch-action:manipulation}
+.b:active{transform:scale(.94)}
 .bg{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a14}
 .bd{background:var(--bd);color:#aaa}
 .br{background:linear-gradient(135deg,var(--red),#ee5a24);color:#fff}
 .bp{background:linear-gradient(135deg,var(--purple),#7c4dff);color:#fff}
 .bgr{background:linear-gradient(135deg,var(--green),#2ecc71);color:#0a0a14}
-.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--radius);padding:14px;margin-bottom:8px}
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:14px;margin-bottom:8px;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .card h3{font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .card .sub{font-size:10px;color:var(--dim)}
 .pill{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:5px 10px;text-align:center;min-width:60px}
 .pill .v{font-size:16px;font-weight:700;color:var(--gold)}
 .pill .l{font-size:8px;color:var(--dim);text-transform:uppercase}
-.nav{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;background:var(--bg2);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
-.nav .n{flex:1;text-align:center;padding:8px 2px;font-size:9px;color:var(--dim);cursor:pointer;transition:color .15s}
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;background:var(--bg2);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(10px)}
+.nav .n{flex:1;text-align:center;padding:8px 2px;font-size:9px;color:var(--dim);cursor:pointer;transition:color .2s}
 .nav .n.on{color:var(--gold)}
 .nav .n .ni{font-size:18px;display:block;margin-bottom:1px}
-.psl-ring{width:120px;height:120px;border-radius:50%;border:6px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-direction:column;margin:0 auto 12px;position:relative}
-.psl-ring.glow{border-color:var(--gold);box-shadow:0 0 20px rgba(247,201,72,.2)}
-.psl-ring .v{font-size:36px;font-weight:900;color:var(--gold)}
+.psl-ring{width:120px;height:120px;border-radius:50%;border:6px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-direction:column;margin:0 auto 12px;position:relative;transition:all .5s}
+.psl-ring.glow{border-color:var(--gold);box-shadow:0 0 30px rgba(247,201,72,.3)}
+.psl-ring .v{font-size:36px;font-weight:900;color:var(--gold);transition:all .3s}
 .psl-ring .l{font-size:10px;color:var(--dim)}
 .metric{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd)}
 .metric:last-child{border-bottom:none}
 .metric .name{flex:1;font-size:11px;color:var(--dim)}
 .metric .bar{width:80px;height:6px;background:var(--bd);border-radius:3px;overflow:hidden}
-.metric .fill{height:100%;border-radius:3px;transition:width .6s ease}
+.metric .fill{height:100%;border-radius:3px;transition:width .8s ease}
 .metric .val{font-size:11px;font-weight:700;width:35px;text-align:right}
-.lb-row{display:flex;align-items:center;gap:8px;padding:8px;margin:3px 0;background:var(--bg2);border:1px solid var(--bd);border-radius:8px}
-.lb-row.me{border-color:var(--gold);background:rgba(50,40,20,.2)}
+.lb-row{display:flex;align-items:center;gap:8px;padding:8px;margin:3px 0;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;transition:all .2s}
+.lb-row.me{border-color:var(--gold);background:rgba(247,201,72,.06)}
 .lb-row .pos{font-size:14px;font-weight:900;width:28px;text-align:center;color:var(--dim)}
 .lb-row .pos.t{color:var(--gold)}
 .lb-row .nick{flex:1;font-size:12px;font-weight:700}
 .lb-row .elo{font-size:12px;font-weight:700;color:var(--gold)}
 .shop-item{display:flex;align-items:center;gap:10px;padding:10px;margin:4px 0;background:var(--bg2);border:1px solid var(--bd);border-radius:10px;cursor:pointer;transition:all .15s}
 .shop-item:active{border-color:var(--gold);transform:scale(.98)}
+.shop-item.owned{border-color:var(--green);background:rgba(78,205,196,.05)}
 .shop-item .si{font-size:28px}
 .shop-item .inf{flex:1}
 .shop-item .nm{font-weight:700;font-size:12px}
 .shop-item .ds{font-size:9px;color:var(--dim)}
 .shop-item .price{font-size:11px;font-weight:700;color:var(--gold)}
+.shop-item .owned-tag{font-size:10px;color:var(--green);font-weight:700}
 .quest{display:flex;align-items:center;gap:8px;padding:8px;margin:3px 0;background:var(--bg2);border:1px solid var(--bd);border-radius:8px}
 .quest .qi{font-size:20px}
 .quest .inf{flex:1}
 .quest .qn{font-weight:700;font-size:11px}
 .quest .qd{font-size:9px;color:var(--dim)}
 .quest .qr{font-size:10px;color:var(--gold)}
-.upload-zone{border:2px dashed var(--bd);border-radius:12px;padding:30px;text-align:center;cursor:pointer;transition:all .15s;margin:12px 0}
+.upload-zone{border:2px dashed var(--bd);border-radius:12px;padding:30px;text-align:center;cursor:pointer;transition:all .2s;margin:12px 0}
 .upload-zone:active{border-color:var(--gold);background:rgba(247,201,72,.03)}
 .upload-zone .ui{font-size:36px;margin-bottom:6px}
 .upload-zone .ut{font-size:12px;color:var(--dim)}
@@ -95,13 +98,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
 .tab-bar{display:flex;gap:4px;margin-bottom:10px;overflow-x:auto;padding-bottom:4px}
 .tab{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:var(--bg2);border:1px solid var(--bd);white-space:nowrap;transition:all .15s}
 .tab.on{background:var(--gold);color:#0a0a14;border-color:var(--gold)}
-.skill-tree{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.skill{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:8px;text-align:center;cursor:pointer;transition:all .15s}
-.skill.unlocked{border-color:var(--green);background:rgba(78,205,196,.08)}
-.skill.locked{opacity:.4}
-.skill .sk-icon{font-size:20px;margin-bottom:4px}
-.skill .sk-name{font-size:9px;font-weight:700}
-.skill .sk-cost{font-size:8px;color:var(--gold)}
+.streak{display:flex;align-items:center;gap:6px;padding:8px 12px;background:linear-gradient(135deg,rgba(247,201,72,.1),rgba(200,148,10,.1));border:1px solid var(--gold);border-radius:10px;margin-bottom:8px}
+.streak .flame{font-size:24px}
+.streak .streak-num{font-size:20px;font-weight:900;color:var(--gold)}
+.streak .streak-label{font-size:10px;color:var(--dim)}
+.shop-cat{font-size:12px;font-weight:700;color:var(--dim);margin:10px 0 4px;text-transform:uppercase;letter-spacing:1px}
+.divider{height:1px;background:var(--bd);margin:8px 0}
 </style>
 </head>
 <body>
@@ -114,11 +116,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   <div class="n" data-s="sShop"><div class="ni">🛒</div>Магазин</div>
 </div>
 
-<!-- AUTH -->
 <div class="scr on" id="sAuth">
   <div style="max-width:380px;margin:0 auto;padding:40px 16px">
     <div style="text-align:center;margin-bottom:30px">
-      <div style="font-size:60px;margin-bottom:8px">🎯</div>
+      <div style="font-size:60px;margin-bottom:8px;animation:float 3s ease-in-out infinite">🎯</div>
       <h1 style="font-size:28px;font-weight:900"><span style="color:var(--gold)">moggme</span></h1>
       <div style="font-size:12px;color:var(--dim);margin-top:4px">AI Face Rating — Узнай свой PSL</div>
     </div>
@@ -147,25 +148,29 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   </div>
 </div>
 
-<!-- PROFILE -->
 <div class="scr" id="sProfile">
   <div class="header"><h1>👤 <span id="pTitle">Профиль</span></h1></div>
   <div style="padding:0 12px">
     <div class="card" id="profileCard">
       <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:50px;height:50px;border-radius:50%;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:24px" id="avatar">👤</div>
+        <div id="avatarFrame" style="width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid var(--bd)">👤</div>
         <div style="flex:1">
           <div style="font-size:14px;font-weight:700" id="pNick">—</div>
           <div style="font-size:10px;color:var(--dim)" id="pStatus"></div>
         </div>
-        <button class="b bd" onclick="doLogout()" style="font-size:10px;padding:6px 10px">🚪 Выйти</button>
+        <button class="b bd" onclick="doLogout()" style="font-size:10px;padding:6px 10px">🚪</button>
       </div>
-      <div style="display:flex;gap:8px;margin-top:10px">
+      <div style="display:flex;gap:6px;margin-top:10px">
         <div class="pill" style="flex:1"><div class="v" id="pElo">1000</div><div class="l">ELO</div></div>
         <div class="pill" style="flex:1"><div class="v" id="pWins">0</div><div class="l">🏆</div></div>
         <div class="pill" style="flex:1"><div class="v" id="pLosses">0</div><div class="l">💀</div></div>
         <div class="pill" style="flex:1"><div class="v" id="pCoins">0</div><div class="l">🪙</div></div>
       </div>
+    </div>
+    <div id="streakBox" class="streak" style="display:none">
+      <div class="flame">🔥</div>
+      <div><div class="streak-num" id="streakNum">0</div><div class="streak-label">Дней подряд</div></div>
+      <div style="margin-left:auto;text-align:right"><div style="font-size:14px;font-weight:700;color:var(--gold)" id="streakBonus">+50</div><div style="font-size:9px;color:var(--dim)">Бонус 🪙</div></div>
     </div>
     <div class="card" id="pslCard" style="display:none">
       <h3>🎯 PSL Рейтинг</h3>
@@ -176,7 +181,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
     <div class="card"><h3>📈 Прогресс</h3><div id="progressList" class="empty">Нет замеров</div></div>
     <div class="card"><h3>📋 Квесты</h3><div id="questList" class="empty">Загрузка...</div></div>
     <div class="card">
-      <h3>🏆 Достижения</h3>
+      <h3>🏆 Достижения <span style="font-size:10px;color:var(--dim);font-weight:400" id="achCount"></span></h3>
       <div id="achList" class="empty">Загрузка...</div>
     </div>
     <div class="card">
@@ -192,13 +197,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   </div>
 </div>
 
-<!-- PHOTO -->
 <div class="scr" id="sPhoto">
   <div class="header"><h1>📸 <span>Оценить лицо</span></h1></div>
   <div style="padding:0 12px">
     <div class="card">
       <h3>📷 Загрузи фото анфас</h3>
-      <div class="sub">Чёткое, без очков и масок.</div>
+      <div class="sub">Чёткое, без очков и масок. +10 🪙 за анализ</div>
       <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
         <div class="ui">📸</div><div class="ut">Нажми или перетащи фото</div>
       </div>
@@ -238,14 +242,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   </div>
 </div>
 
-<!-- TOP -->
 <div class="scr" id="sTop">
   <div class="header"><h1>🏆 <span>Топ игроков</span></h1></div>
   <div style="padding:0 12px">
-    <div style="display:flex;gap:8px;margin-bottom:8px">
+    <div style="display:flex;gap:6px;margin-bottom:8px">
       <div class="pill" style="flex:1"><div class="v" id="avgPsl">—</div><div class="l">Средний PSL</div></div>
-      <div class="pill" style="flex:1"><div class="v" id="totalMeas">0</div><div class="l">Всего замеров</div></div>
-      <div class="pill" style="flex:1"><div class="v" id="onlineCount" style="color:var(--green)">0</div><div class="l">Сейчас онлайн</div></div>
+      <div class="pill" style="flex:1"><div class="v" id="totalMeas">0</div><div class="l">Замеров</div></div>
+      <div class="pill" style="flex:1"><div class="v" id="onlineCount" style="color:var(--green)">0</div><div class="l">Онлайн</div></div>
     </div>
     <div class="tab-bar">
       <div class="tab on" onclick="switchLBTab(this,'elo')">🏅 ELO</div>
@@ -256,41 +259,67 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   </div>
 </div>
 
-<!-- BATTLE -->
 <div class="scr" id="sBattle">
   <div class="header"><h1>⚔️ <span>Батлы</span></h1></div>
   <div style="padding:0 12px">
     <div class="card">
       <h3>🎮 Новый батл</h3>
-      <div class="sub">Введи ник противника</div>
+      <div class="sub">Введи ник противника — победитель определяется по PSL</div>
       <div style="display:flex;gap:6px;margin-top:8px">
         <input id="battleInput" class="input" placeholder="Ник противника">
         <button class="b br" onclick="startBattle()">⚔️</button>
       </div>
     </div>
-    <div class="card"><h3>📊 Авто-батл</h3><div style="text-align:center;margin:8px 0"><button class="b bp" onclick="autoBattle()">🎲 Случайный батл</button></div></div>
+    <div class="card">
+      <h3>📊 Авто-батл</h3>
+      <div style="text-align:center;margin:8px 0"><button class="b bp" onclick="autoBattle()">🎲 Случайный батл (+25 🪙)</button></div>
+    </div>
+    <div class="card">
+      <h3>🏆 Рекорд</h3>
+      <div style="display:flex;gap:8px">
+        <div class="pill" style="flex:1"><div class="v" id="bWinStreak">0</div><div class="l">Серия побед</div></div>
+        <div class="pill" style="flex:1"><div class="v" id="bTotal">0</div><div class="l">Всего батлов</div></div>
+        <div class="pill" style="flex:1"><div class="v" id="bWinRate" style="color:var(--green)">0%</div><div class="l">Винрейт</div></div>
+      </div>
+    </div>
     <div class="card"><h3>📜 История батлов</h3><div id="battleHistory" class="empty">Пока нет батлов</div></div>
     <div style="height:70px"></div>
   </div>
 </div>
 
-<!-- SHOP -->
 <div class="scr" id="sShop">
   <div class="header"><h1>🛒 <span>Магазин</span></h1></div>
   <div style="padding:0 12px">
-    <div class="card"><h3>🪙 Монеты: <span id="sCoins">0</span></h3></div>
-    <div class="card">
-      <h3>💰 Покупка ELO</h3>
-      <div class="shop-item" onclick="buyElo(100,500)"><div class="si">📈</div><div class="inf"><div class="nm">+100 ELO</div><div class="ds">Буст рейтинга</div></div><div class="price">🪙 500</div></div>
-      <div class="shop-item" onclick="buyElo(200,900)"><div class="si">📈</div><div class="inf"><div class="nm">+200 ELO</div><div class="ds">Серьёзный буст</div></div><div class="price">🪙 900</div></div>
-      <div class="shop-item" onclick="buyElo(500,2000)"><div class="si">🚀</div><div class="inf"><div class="nm">+500 ELO</div><div class="ds">Мега-буст</div></div><div class="price">🪙 2000</div></div>
+    <div class="card" style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:28px">🪙</div>
+      <div style="flex:1"><div style="font-size:20px;font-weight:900;color:var(--gold)" id="sCoins">0</div><div style="font-size:10px;color:var(--dim)">Монет</div></div>
+      <div style="font-size:11px;color:var(--dim)" id="sDailyInfo"></div>
     </div>
+
+    <div class="shop-cat">📈 Улучшение рейтинга</div>
     <div class="card">
-      <h3>💎 Premium за монеты</h3>
-      <div class="shop-item" onclick="buyPremium('premium_report',200)"><div class="si">💎</div><div class="inf"><div class="nm">Premium-отчёт</div><div class="ds">Перцентиль, потенциал, разбор</div></div><div class="price">🪙 200</div></div>
-      <div class="shop-item" onclick="buyPremium('vip_30',3000)"><div class="si">👑</div><div class="inf"><div class="nm">VIP 30 дней</div><div class="ds">x1.5 монет, +200/день</div></div><div class="price">🪙 3000</div></div>
-      <div class="shop-item" onclick="buyPremium('platinum',15000)"><div class="si">💠</div><div class="inf"><div class="nm">Платиновый ник</div><div class="ds">Навсегда, все VIP-бонусы</div></div><div class="price">🪙 15000</div></div>
+      <div class="shop-item" onclick="buyItem('elo100',500)"><div class="si">📈</div><div class="inf"><div class="nm">+100 ELO</div><div class="ds">Буст рейтинга</div></div><div class="price">500 🪙</div></div>
+      <div class="shop-item" onclick="buyItem('elo200',900)"><div class="si">🚀</div><div class="inf"><div class="nm">+200 ELO</div><div class="ds">Серьёзный буст</div></div><div class="price">900 🪙</div></div>
+      <div class="shop-item" onclick="buyItem('elo500',2000)"><div class="si">⚡</div><div class="inf"><div class="nm">+500 ELO</div><div class="ds">Мега-буст</div></div><div class="price">2000 🪙</div></div>
     </div>
+
+    <div class="shop-cat">⭐ Premium</div>
+    <div class="card">
+      <div class="shop-item" onclick="buyItem('premium',300)" id="shopPremium"><div class="si">💎</div><div class="inf"><div class="nm">Premium-отчёт</div><div class="ds">Перцентиль, потенциал, детальный разбор</div></div><div class="price">300 🪙</div></div>
+      <div class="shop-item" onclick="buyItem('vip',5000)" id="shopVip"><div class="si">👑</div><div class="inf"><div class="nm">VIP 30 дней</div><div class="ds">x1.5 монет, +200/день, значок 👑</div></div><div class="price">5000 🪙</div></div>
+      <div class="shop-item" onclick="buyItem('platinum',25000)" id="shopPlat"><div class="si">💠</div><div class="inf"><div class="nm">Платиновый навсегда</div><div class="ds">Все VIP-бонусы навсегда, значок 💠</div></div><div class="price">25000 🪙</div></div>
+    </div>
+
+    <div class="shop-cat">🎨 Аватар-рамки</div>
+    <div class="card" id="shopFrames"></div>
+
+    <div class="shop-cat">🎁 Бустеры</div>
+    <div class="card">
+      <div class="shop-item" onclick="buyItem('double_coins',800)"><div class="si">🪙</div><div class="inf"><div class="nm">x2 монеты на 24ч</div><div class="ds">Двойные монеты за всё</div></div><div class="price">800 🪙</div></div>
+      <div class="shop-item" onclick="buyItem('lucky_boost',600)"><div class="si">🍀</div><div class="inf"><div class="nm">Lucky-буст на 10 анализов</div><div class="ds">+50% монет за анализ</div></div><div class="price">600 🪙</div></div>
+      <div class="shop-item" onclick="buyItem('shield',1000)"><div class="si">🛡</div><div class="inf"><div class="nm">Щит от поражения</div><div class="ds">Следующее поражение не засчитывается</div></div><div class="price">1000 🪙</div></div>
+    </div>
+
     <div style="height:70px"></div>
   </div>
 </div>
@@ -298,27 +327,30 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.js" crossorigin="anonymous"></script>
 <script>
 const $=id=>document.getElementById(id);
-let currentUser=null,myData=null,leaderboard=[],faceMeshReady=null,analyzingBusy=false,lbTab='elo';
+let currentUser=null,myData=null,faceMeshReady=null,analyzingBusy=false,lbTab='elo';
 const API=location.origin;
 const SESSION_ID='s_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+const AUDIO=new(window.AudioContext||window.webkitAudioContext)();
+
+// === SOUND ===
+function playSound(type){
+  try{if(AUDIO.state==='suspended')AUDIO.resume();const o=AUDIO.createOscillator(),g=AUDIO.createGain();o.connect(g);g.connect(AUDIO.destination);g.gain.value=0.06;
+    if(type==='coin'){o.frequency.value=880;g.gain.exponentialRampToValueAtTime(0.001,AUDIO.currentTime+0.12);o.start();o.stop(AUDIO.currentTime+0.12)}
+    else if(type==='win'){o.frequency.value=523;g.gain.exponentialRampToValueAtTime(0.001,AUDIO.currentTime+0.2);o.start();setTimeout(()=>{try{const o2=AUDIO.createOscillator(),g2=AUDIO.createGain();o2.connect(g2);g2.connect(AUDIO.destination);g2.gain.value=0.06;o2.frequency.value=659;g2.gain.exponentialRampToValueAtTime(0.001,AUDIO.currentTime+0.3);o2.start();o2.stop(AUDIO.currentTime+0.3)}catch(e){}},100);o.stop(AUDIO.currentTime+0.2)}
+    else if(type==='lose'){o.frequency.value=330;g.gain.exponentialRampToValueAtTime(0.001,AUDIO.currentTime+0.3);o.start();o.stop(AUDIO.currentTime+0.3)}
+    else if(type==='unlock'){o.frequency.value=660;g.gain.exponentialRampToValueAtTime(0.001,AUDIO.currentTime+0.15);o.start();setTimeout(()=>{try{const o2=AUDIO.createOscillator(),g2=AUDIO.createGain();o2.connect(g2);g2.connect(AUDIO.destination);g2.gain.value=0.06;o2.frequency.value=880;g2.gain.exponentialRampToValueAtTime(0.001,AUDIO.currentTime+0.2);o2.start();o2.stop(AUDIO.currentTime+0.2)}catch(e){}},120);o.stop(AUDIO.currentTime+0.15)}
+  }catch(e){}
+}
 
 // === ONLINE HEARTBEAT ===
-async function sendHeartbeat(){
-  try{await fetch(API+'/api/heartbeat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sid:SESSION_ID})})}catch(e){}
-}
-async function fetchOnline(){
-  try{const r=await fetch(API+'/api/online');const d=await r.json();if(d.ok)$('onlineCount').textContent=d.online}catch(e){}
-}
-async function fetchStats(){
-  try{const r=await fetch(API+'/api/stats');const d=await r.json();if(d.ok){$('avgPsl').textContent=d.avgPsl?d.avgPsl.toFixed(1):'—';$('totalMeas').textContent=d.total||0}}catch(e){}
-}
-async function postScore(psl,symmetry){
-  try{await fetch(API+'/api/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({psl,symmetry})})}catch(e){}
-}
+async function sendHeartbeat(){try{await fetch(API+'/api/heartbeat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sid:SESSION_ID})})}catch(e){}}
+async function fetchOnline(){try{const r=await fetch(API+'/api/online');const d=await r.json();if(d.ok)$('onlineCount').textContent=d.online}catch(e){}}
+async function fetchStats(){try{const r=await fetch(API+'/api/stats');const d=await r.json();if(d.ok){$('avgPsl').textContent=d.avgPsl?d.avgPsl.toFixed(1):'—';$('totalMeas').textContent=d.total||0}}catch(e){}}
+async function postScore(psl,symmetry){try{await fetch(API+'/api/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({psl,symmetry})})}catch(e){}}
 sendHeartbeat();fetchOnline();fetchStats();
 setInterval(()=>{sendHeartbeat();fetchOnline();fetchStats()},30000);
 
-// === AUTH ===
+// === NAV ===
 document.querySelectorAll('.nav .n').forEach(n=>{
   n.onclick=()=>{
     document.querySelectorAll('.nav .n').forEach(x=>x.classList.remove('on'));
@@ -326,19 +358,86 @@ document.querySelectorAll('.nav .n').forEach(n=>{
     document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
     $(n.dataset.s).classList.add('on');
     if(n.dataset.s==='sTop'){fetchStats();fetchOnline();renderLB()}
+    if(n.dataset.s==='sProfile')updateProfileUI();
+    if(n.dataset.s==='sShop')updateShopUI();
+    if(n.dataset.s==='sBattle')updateBattleUI();
   };
 });
 
 function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),1800)}
 
+// === DATA ===
 function getUsers(){try{return JSON.parse(localStorage.getItem('moggme_users')||'{}')}catch(e){return{}}}
 function saveUsers(u){localStorage.setItem('moggme_users',JSON.stringify(u))}
-function getUserData(id){const u=getUsers();return u[id]||null}
+function getUserData(id){return getUsers()[id]||null}
 function setUserData(id,d){const u=getUsers();u[id]=d;saveUsers(u)}
-
 function showReg(){$('authLogin').style.display='none';$('authReg').style.display=''}
 function showLogin(){$('authReg').style.display='none';$('authLogin').style.display=''}
 
+// === AVATAR FRAMES ===
+const FRAMES=[
+  {id:'none',name:'Нет',icon:'👤',price:0,border:'var(--bd)'},
+  {id:'fire',name:'Огненная',icon:'🔥',price:500,border:'linear-gradient(135deg,#ff6b00,#ff0000)'},
+  {id:'ice',name:'Ледяная',icon:'❄️',price:500,border:'linear-gradient(135deg,#00bfff,#0066ff)'},
+  {id:'gold',name:'Золотая',icon:'👑',price:1500,border:'linear-gradient(135deg,#f7c948,#c8940a)'},
+  {id:'neon',name:'Неон',icon:'💜',price:2000,border:'linear-gradient(135deg,#a855f7,#ff6b9d)'},
+  {id:'toxic',name:'Токсичная',icon:'☠️',price:3000,border:'linear-gradient(135deg,#00ff88,#00cc44)'},
+  {id:'royal',name:'Королевская',icon:'💎',price:8000,border:'linear-gradient(135deg,#f7c948,#a855f7,#ff6b9d)'},
+];
+
+function renderShopFrames(){
+  let h='';FRAMES.forEach(f=>{
+    const owned=(myData?.owned_frames||[]).includes(f.id);
+    const active=myData?.active_frame===f.id;
+    h+=`<div class="shop-item${owned?' owned':''}" onclick="buyFrame('${f.id}',${f.price})">
+      <div class="si" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid ${f.border};font-size:18px">${f.icon}</div>
+      <div class="inf"><div class="nm">${f.name}</div>${f.price?`<div class="ds">${f.price} 🪙</div>`:'<div class="ds">Бесплатно</div>'}</div>
+      <div>${active?'<span style="color:var(--gold);font-size:10px;font-weight:700">✓ Активна</span>':owned?'<span style="color:var(--green);font-size:10px">Есть</span>':`<span style="color:var(--gold);font-size:11px;font-weight:700">${f.price} 🪙</span>`}</div>
+    </div>`;
+  });$('shopFrames').innerHTML=h;
+}
+
+function buyFrame(id,price){
+  if(!myData)return;
+  if(id==='none'){myData.active_frame='none';setUserData(currentUser,myData);updateShopUI();updateProfileUI();toast('Рамка снята');return}
+  if((myData.owned_frames||[]).includes(id)){myData.active_frame=id;setUserData(currentUser,myData);updateShopUI();updateProfileUI();toast('Рамка активирована!');return}
+  if((myData.coins||0)<price){toast('Нужно '+price+' монет');return}
+  myData.coins-=price;if(!myData.owned_frames)myData.owned_frames=[];myData.owned_frames.push(id);myData.active_frame=id;
+  setUserData(currentUser,myData);playSound('unlock');updateShopUI();updateProfileUI();toast('Рамка куплена!');
+}
+
+// === DAILY STREAK ===
+function getStreakInfo(){
+  if(!myData)return{streak:0,lastDate:null,bonus:50};
+  const s=myData.streak||0;
+  const last=myData.streak_date||null;
+  const today=new Date().toDateString();
+  const yesterday=new Date(Date.now()-86400000).toDateString();
+  const isVip=myData.vip||myData.platinum;
+  const base=50;
+  let bonus;
+  if(s>=30)bonus=500;else if(s>=14)bonus=300;else if(s>=7)bonus=200;else if(s>=3)bonus=100;else bonus=base;
+  if(isVip)bonus=Math.round(bonus*1.5);
+  return{streak:s,lastDate:last,bonus,today,yesterday};
+}
+
+function checkDaily(){
+  if(!myData)return;
+  const info=getStreakInfo();
+  const today=info.today;
+  if(myData.daily===today)return;
+  const yesterday=info.yesterday;
+  if(myData.daily===yesterday){myData.streak=(myData.streak||0)+1}
+  else if(myData.daily!==today){myData.streak=1}
+  myData.streak_date=today;myData.daily=today;
+  const bonus=getStreakInfo().bonus;
+  const mult=(myData.double_coins_until&&Date.now()<myData.double_coins_until)?2:1;
+  myData.coins=(myData.coins||0)+bonus*mult;
+  setUserData(currentUser,myData);
+  setTimeout(()=>{toast('🔥 Серия '+myData.streak+' дн! +'+bonus*mult+' 🪙');playSound('coin')},500);
+}
+
+// === REG/LOGIN ===
 function doReg(){
   const nick=($('regNick').value||'').trim();
   const pass=($('regPass').value||'').trim();
@@ -347,14 +446,14 @@ function doReg(){
   const users=getUsers();
   for(const k in users){if(users[k].nickname&&users[k].nickname.toLowerCase()===nick.toLowerCase()){toast('Ник уже занят');return}}
   const id='u_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
-  const data={id,nickname:nick,password:pass,elo:1000,wins:0,losses:0,coins:100,stars:0,last_psl:null,metrics:null,history:[],achievements:[],referrals:0,ref_earned:0,vip:false,platinum:false,premium:false,daily:null,battles:[],created:Date.now()};
+  const data={id,nickname:nick,password:pass,elo:1000,wins:0,losses:0,coins:150,history:[],achievements:[],owned_frames:['none'],active_frame:'none',referrals:0,ref_earned:0,vip:false,platinum:false,premium:false,daily:null,streak:0,streak_date:null,battles:[],win_streak:0,best_win_streak:0,shield:false,lucky_analyses:0,double_coins_until:0,created:Date.now()};
   setUserData(id,data);
   localStorage.setItem('moggme_current',id);
   currentUser=id;myData=data;
   $('nav').style.display='flex';
   $('sAuth').classList.remove('on');$('sProfile').classList.add('on');
   document.querySelector('[data-s="sProfile"]').classList.add('on');
-  updateProfileUI();toast('Добро пожаловать, '+nick+'! 🪙 +100 за регистрацию');
+  checkDaily();updateProfileUI();playSound('unlock');toast('Добро пожаловать! 🪙 +150 за регистрацию');
 }
 
 function doLogin(){
@@ -373,38 +472,15 @@ function doLogin(){
   toast('Неверный ник или пароль');
 }
 
-function doLogout(){
-  localStorage.removeItem('moggme_current');
-  currentUser=null;myData=null;
-  $('nav').style.display='none';
-  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
-  $('sAuth').classList.add('on');
-}
-
-function checkDaily(){
-  if(!myData)return;
-  const today=new Date().toDateString();
-  if(myData.daily!==today){
-    myData.daily=today;
-    const bonus=myData.vip||myData.platinum?200:50;
-    myData.coins+=bonus;
-    setUserData(currentUser,myData);
-    setTimeout(()=>toast('Ежедневный бонус: +'+bonus+' 🪙'),500);
-  }
-}
+function doLogout(){localStorage.removeItem('moggme_current');currentUser=null;myData=null;$('nav').style.display='none';document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));$('sAuth').classList.add('on')}
 
 // === INIT ===
 (function(){
   $('nav').style.display='none';
   const cur=localStorage.getItem('moggme_current');
-  if(cur){
-    const d=getUserData(cur);
-    if(d){currentUser=cur;myData=d;$('nav').style.display='flex';
-      document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
-      $('sProfile').classList.add('on');
-      document.querySelector('[data-s="sProfile"]').classList.add('on');
-      checkDaily();updateProfileUI();renderLB();}
-  }
+  if(cur){const d=getUserData(cur);if(d){currentUser=cur;myData=d;$('nav').style.display='flex';
+    document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));$('sProfile').classList.add('on');
+    document.querySelector('[data-s="sProfile"]').classList.add('on');checkDaily();updateProfileUI();renderLB();}}
 })();
 
 // === PROFILE ===
@@ -417,15 +493,23 @@ function updateProfileUI(){
   $('pLosses').textContent=myData.losses||0;
   $('pCoins').textContent=myData.coins||0;
   $('sCoins').textContent=myData.coins||0;
-  let s='';if(myData.platinum)s='<span style="color:var(--blue);font-weight:700">💠 PLATINUM</span>';else if(myData.vip)s='<span style="color:var(--gold);font-weight:700">👑 VIP</span>';$('pStatus').innerHTML=s;
+  const frame=FRAMES.find(f=>f.id===(myData.active_frame||'none'))||FRAMES[0];
+  const af=$('avatarFrame');
+  af.textContent=frame.icon;
+  if(frame.id!=='none')af.style.border='2px solid '+frame.border;else af.style.border='2px solid var(--bd)';
+  let s='';if(myData.platinum)s='<span style="color:var(--blue);font-weight:700;font-size:10px">💠 PLATINUM</span>';else if(myData.vip)s='<span style="color:var(--gold);font-weight:700;font-size:10px">👑 VIP</span>';
+  if(myData.premium)s+=(s?' · ':'')+'<span style="color:var(--purple);font-size:10px">💎 Premium</span>';
+  $('pStatus').innerHTML=s;
+  const si=getStreakInfo();
+  if(si.streak>0){$('streakBox').style.display='flex';$('streakNum').textContent=si.streak;$('streakBonus').textContent='+'+si.bonus}else $('streakBox').style.display='none';
   if(myData.last_psl){
     $('pslCard').style.display='';$('pslVal').textContent=myData.last_psl.toFixed(1);$('pslCat').innerHTML=getCatBadge(myData.last_psl);
     const m=myData.metrics||{};let mh='';
-    [['Симметрия',m.symmetry,'#4ecdc4'],['Межзрачковое',m.ipd_score,'#4a9eff'],['Нос',m.nose_width_score,'#a855f7'],['Рот',m.mouth_score,'#ff6b9d'],['Челюсть',m.jaw,'#f7c948'],['Золотое ↕',m.gold_vert,'#4ecdc4'],['Глаза ↔',m.gold_horiz,'#4a9eff'],['Наклон глаз',m.tilt_score,'#a855f7']].forEach(([n,v,c])=>{
+    [['Симметрия',m.symmetry,'#4ecdc4'],['Межзрачковое',m.ipd_score,'#4a9eff'],['Нос',m.nose_width_score,'#a855f7'],['Рот',m.mouth_score,'#ff6b9d'],['Челюсть',m.jaw,'#f7c948'],['Золотое ↕',m.gold_vert,'#4ecdc4'],['Глаза ↔',m.gold_horiz,'#4a9eff'],['Наклон',m.tilt_score,'#a855f7']].forEach(([n,v,c])=>{
       mh+=`<div class="metric"><div class="name">${n}</div><div class="bar"><div class="fill" style="width:${v||0}%;background:${c}"></div></div><div class="val" style="color:${c}">${v||0}%</div></div>`;
     });$('pslMetrics').innerHTML=mh;
-  }else{$('pslCard').style.display='none'}
-  if(myData.history&&myData.history.length>0){let ph='';myData.history.slice(-5).reverse().forEach(h=>{ph+=`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bd);font-size:11px"><span>${h.date||'Недавно'}</span><span style="color:var(--gold)">PSL ${h.psl.toFixed(1)}</span><span>Симм. ${h.symmetry}%</span></div>`});$('progressList').innerHTML=ph}
+  }else $('pslCard').style.display='none';
+  if(myData.history&&myData.history.length>0){let ph='';myData.history.slice(-5).reverse().forEach(h=>{ph+=`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bd);font-size:11px"><span>${h.date||'Недавно'}</span><span style="color:var(--gold)">PSL ${h.psl.toFixed(1)}</span><span>Симм. ${h.symmetry}%</span></div>`});$('progressList').innerHTML=ph}else $('progressList').innerHTML='<div class="empty">Нет замеров</div>';
   $('refLink').textContent=location.origin+'/?ref='+myData.id;
   $('refTotal').textContent=myData.referrals||0;
   $('refEarned').textContent=myData.ref_earned||0;
@@ -440,393 +524,236 @@ function getCatBadge(psl){
   return'<span class="cat-badge cat-elite">👑 Элитный</span>';
 }
 
-const QUESTS=[
-  {i:'📸',n:'Отправь фото',r:10,key:'photo'},
-  {i:'⚔️',n:'Победи в батле',r:20,key:'battle_win'},
-  {i:'🎯',n:'PSL 5.0+',r:30,key:'psl_high'},
-  {i:'🔁',n:'2 фото подряд',r:15,key:'photo_count'},
-  {i:'🏆',n:'2 победы',r:40,key:'battle_win_count'},
-  {i:'⭐',n:'Симметрия >80%',r:25,key:'symmetry'}
-];
-
-function renderQuests(){
-  let h='';QUESTS.forEach(q=>{h+=`<div class="quest"><div class="qi">${q.i}</div><div class="inf"><div class="qn">${q.n}</div><div class="qd">Награда</div></div><div class="qr">${q.r} 🪙</div></div>`});$('questList').innerHTML=h;
-}
+const QUESTS=[{i:'📸',n:'Пройди анализ',r:10},{i:'⚔️',n:'Победи в батле',r:20},{i:'🎯',n:'PSL 5.0+',r:30},{i:'🔁',n:'2 анализа',r:15},{i:'🏆',n:'2 победы',r:40},{i:'⭐',n:'Симметрия >80%',r:25}];
+function renderQuests(){let h='';QUESTS.forEach(q=>{h+=`<div class="quest"><div class="qi">${q.i}</div><div class="inf"><div class="qn">${q.n}</div><div class="qd">Награда</div></div><div class="qr">${q.r} 🪙</div></div>`});$('questList').innerHTML=h}
 
 const ACHIEVEMENTS=[
-  {i:'📸',n:'Первый замер',d:'Пройди первый анализ',key:'first_photo',r:50},
-  {i:'🎯',n:'PSL 5.0',d:'Набери PSL 5.0+',key:'psl5',r:100},
-  {i:'🔥',n:'PSL 7.0',d:'Набери PSL 7.0+',key:'psl7',r:500},
-  {i:'👑',n:'Элита',d:'PSL 7.5+',key:'psl75',r:1000},
-  {i:'⚔️',n:'Боец',d:'Выиграй 5 батлов',key:'wins5',r:200},
-  {i:'🏆',n:'Чемпион',d:'Выиграй 20 батлов',key:'wins20',r:1000},
-  {i:'🪙',n:'Копилка',d:'Накопи 5000 монет',key:'coins5k',r:300},
-  {i:'💎',n:'Магнат',d:'Накопи 20000 монет',key:'coins20k',r:1000},
-  {i:'📈',n:'Рост',d:'Рейтинг 1500+',key:'elo1500',r:500},
-  {i:'🌟',n:'Звезда',d:'Рейтинг 2000+',key:'elo2000',r:1000},
-  {i:'🧠',n:'Гений',d:'Симметрия >90%',key:'sym90',r:300},
-  {i:'💀',n:'Урод',d:'PSL < 2.0',key:'ugly',r:100}
+  {i:'📸',n:'Первый замер',d:'Пройди анализ',key:'first',r:50},{i:'🎯',n:'PSL 5.0',d:'Набери 5.0+',key:'psl5',r:100},
+  {i:'🔥',n:'PSL 7.0',d:'Набери 7.0+',key:'psl7',r:500},{i:'👑',n:'Элита',d:'PSL 7.5+',key:'psl75',r:1000},
+  {i:'⚔️',n:'Боец',d:'5 побед',key:'w5',r:200},{i:'🏆',n:'Чемпион',d:'20 побед',key:'w20',r:1000},
+  {i:'🪙',n:'Копилка',d:'5000 монет',key:'c5k',r:300},{i:'💎',n:'Магнат',d:'20000 монет',key:'c20k',r:1000},
+  {i:'📈',n:'Рост',d:'ELO 1500+',key:'e1500',r:500},{i:'🌟',n:'Звезда',d:'ELO 2000+',key:'e2000',r:1000},
+  {i:'🧠',n:'Гений',d:'Симметрия >90%',key:'sym90',r:300},{i:'💀',n:'Неудачник',d:'PSL < 2.0',key:'ugly',r:100},
+  {i:'🔥',n:'Огненный',d:'Серия 7 дней',key:'streak7',r:400},{i:'🏅',n:'Непобедимый',d:'10 побед подряд',key:'ws10',r:2000}
 ];
-
 function checkAchievements(){
-  if(!myData)return;
-  const a=myData.achievements||[];
-  const add=(key)=>{if(!a.includes(key)){a.push(key);return true}return false};
-  let earned=0;
-  if(myData.history&&myData.history.length>0){if(add('first_photo'))earned+=50}
-  if(myData.last_psl>=5&&add('psl5'))earned+=100;
-  if(myData.last_psl>=7&&add('psl7'))earned+=500;
-  if(myData.last_psl>=7.5&&add('psl75'))earned+=1000;
-  if(myData.wins>=5&&add('wins5'))earned+=200;
-  if(myData.wins>=20&&add('wins20'))earned+=1000;
-  if(myData.coins>=5000&&add('coins5k'))earned+=300;
-  if(myData.coins>=20000&&add('coins20k'))earned+=1000;
-  if(myData.elo>=1500&&add('elo1500'))earned+=500;
-  if(myData.elo>=2000&&add('elo2000'))earned+=1000;
-  if(myData.metrics&&myData.metrics.symmetry>=90&&add('sym90'))earned+=300;
-  if(myData.last_psl&&myData.last_psl<2&&add('ugly'))earned+=100;
-  myData.achievements=a;
-  if(earned>0){myData.coins+=earned;setUserData(currentUser,myData);toast('🏅 Достижение! +'+earned+' 🪙')}
+  if(!myData)return;const a=myData.achievements||[];const add=k=>{if(!a.includes(k)){a.push(k);return true}return false};let e=0;
+  if(myData.history?.length>0&&add('first'))e+=50;
+  if(myData.last_psl>=5&&add('psl5'))e+=100;if(myData.last_psl>=7&&add('psl7'))e+=500;if(myData.last_psl>=7.5&&add('psl75'))e+=1000;
+  if(myData.wins>=5&&add('w5'))e+=200;if(myData.wins>=20&&add('w20'))e+=1000;
+  if(myData.coins>=5000&&add('c5k'))e+=300;if(myData.coins>=20000&&add('c20k'))e+=1000;
+  if(myData.elo>=1500&&add('e1500'))e+=500;if(myData.elo>=2000&&add('e2000'))e+=1000;
+  if(myData.metrics?.symmetry>=90&&add('sym90'))e+=300;if(myData.last_psl<2&&add('ugly'))e+=100;
+  if((myData.streak||0)>=7&&add('streak7'))e+=400;if((myData.win_streak||0)>=10&&add('ws10'))e+=2000;
+  myData.achievements=a;if(e>0){myData.coins+=e;setUserData(currentUser,myData);playSound('unlock');toast('🏅 Достижение! +'+e+' 🪙')}
 }
-
 function renderAchievements(){
-  if(!myData)return;
-  const a=myData.achievements||[];
-  let h='';ACHIEVEMENTS.forEach(ch=>{
-    const done=a.includes(ch.key);
-    h+=`<div class="ach-card${done?' done':''}"><div class="ai">${ch.i}</div><div style="flex:1"><div class="an">${ch.n}</div><div class="ad">${ch.d}</div></div><div class="ar">${done?'✅':'🪙 '+ch.r}</div></div>`;
-  });$('achList').innerHTML=h;
+  if(!myData)return;const a=myData.achievements||[];let done=0;let h='';ACHIEVEMENTS.forEach(ch=>{const d=a.includes(ch.key);if(d)done++;h+=`<div class="ach-card${d?' done':''}"><div class="ai">${ch.i}</div><div style="flex:1"><div class="an">${ch.n}</div><div class="ad">${ch.d}</div></div><div class="ar">${d?'✅':'🪙 '+ch.r}</div></div>`});$('achList').innerHTML=h;$('achCount').textContent=`${done}/${ACHIEVEMENTS.length}`;
 }
 
 // === LEADERBOARD ===
-function getAllUsers(){const u=getUsers();return Object.values(u).filter(x=>x.nickname)}
+function getAllUsers(){return Object.values(getUsers()).filter(x=>x.nickname)}
 function switchLBTab(el,tab){lbTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderLB();fetchStats();fetchOnline()}
-
 function renderLB(){
   const users=getAllUsers();
-  const u=getUser();
-  if(lbTab==='elo'){users.sort((a,b)=>(b.elo||1000)-(a.elo||1000))}
-  else{users.sort((a,b)=>(b.last_psl||0)-(a.last_psl||0))}
+  if(lbTab==='elo')users.sort((a,b)=>(b.elo||1000)-(a.elo||1000));else users.sort((a,b)=>(b.last_psl||0)-(a.last_psl||0));
   let h='';users.slice(0,50).forEach((p,i)=>{
-    const me=p.id===currentUser;
-    const m=['🥇','🥈','🥉'][i]||'';
+    const me=p.id===currentUser;const m=['🥇','🥈','🥉'][i]||'';
     const val=lbTab==='elo'?(p.elo||1000):((p.last_psl||0).toFixed(1)+' PSL');
     h+=`<div class="lb-row${me?' me':''}"><div class="pos${i<3?' t':''}">${i+1}</div><div style="font-size:16px">${m||'🎮'}</div><div class="nick">${p.nickname}</div><div class="elo">${val}</div></div>`;
   });$('lbList').innerHTML=h||'<div class="empty">Пока нет данных</div>';
 }
 
-function getUser(){return currentUser?getUserData(currentUser):null}
-
-// === MEDIAPIPE FACE MESH ===
+// === MEDIAPIPE ===
 function ensureFaceMesh(){
-  if(faceMeshReady)return faceMeshReady;
-  if(typeof FaceMesh==='undefined'){faceMeshReady=Promise.reject(new Error('CDN not loaded'));return faceMeshReady}
-  faceMeshReady=new Promise((resolve,reject)=>{
-    try{
-      const fm=new FaceMesh({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/${f}`});
-      fm.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
-      fm.onResults(()=>{});
-      resolve(fm);
-    }catch(e){reject(e)}
-  });
-  return faceMeshReady;
+  if(faceMeshReady)return faceMeshReady;if(typeof FaceMesh==='undefined'){faceMeshReady=Promise.reject();return faceMeshReady}
+  faceMeshReady=new Promise((r,j)=>{try{const fm=new FaceMesh({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/${f}`});fm.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});fm.onResults(()=>{});r(fm)}catch(e){j(e)}});return faceMeshReady;
 }
-
 function dist(a,b){return Math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2)}
 
-// Exact bot algorithm — analyze_face() from bot 2.py
 function computeMetrics(pts){
-  const nose_center=pts[1], sellion=pts[168], chin=pts[152];
-  const zy_left=pts[234], zy_right=pts[454];
-  const bizygomatic=dist(zy_left,zy_right);
-  const go_left=pts[58], go_right=pts[288];
-  const bigonial=dist(go_left,go_right);
-  const left_pupil=pts[468], right_pupil=pts[473];
-  const ipd=dist(left_pupil,right_pupil);
-  const alar_left=pts[98], alar_right=pts[327];
-  const nose_width=dist(alar_left,alar_right);
-  const mouth_left=pts[61], mouth_right=pts[291];
-  const mouth_width=dist(mouth_left,mouth_right);
-
-  // Symmetry (7 pairs)
+  const nose_center=pts[1],sellion=pts[168],chin=pts[152];
+  const bizygomatic=dist(pts[234],pts[454]);const bigonial=dist(pts[58],pts[288]);
+  const ipd=dist(pts[468],pts[473]);const nose_width=dist(pts[98],pts[327]);
+  const mouth_width=dist(pts[61],pts[291]);
   const sym_pairs=[[33,263],[133,362],[234,454],[58,288],[98,327],[61,291],[105,334]];
-  const nose_x=nose_center[0];
-  const deviations=[];
-  for(const[li,ri]of sym_pairs){
-    const dl=Math.abs(pts[li][0]-nose_x), dr=Math.abs(pts[ri][0]-nose_x);
-    if(Math.max(dl,dr)>0)deviations.push(Math.abs(dl-dr)/Math.max(dl,dr));
-  }
+  const nose_x=nose_center[0];const deviations=[];
+  for(const[li,ri]of sym_pairs){const dl=Math.abs(pts[li][0]-nose_x),dr=Math.abs(pts[ri][0]-nose_x);if(Math.max(dl,dr)>0)deviations.push(Math.abs(dl-dr)/Math.max(dl,dr))}
   const symmetry_score=deviations.length?(1-deviations.reduce((a,b)=>a+b,0)/deviations.length):0;
-
-  // IPD
-  let ipd_score;
-  if(bizygomatic>0){const r=ipd/bizygomatic;ipd_score=1-Math.min(Math.abs(r-0.46)/0.1,1.0)}else ipd_score=0.5;
-
-  // Nose width
-  let nose_width_score;
-  if(ipd>0){const r=nose_width/ipd;nose_width_score=Math.max(0.1,Math.exp(-Math.pow(r-1.0,2)/(2*Math.pow(0.3,2))))}else nose_width_score=0.5;
-
-  // Mouth
-  let mouth_score;
-  if(bizygomatic>0){const r=mouth_width/bizygomatic;mouth_score=1-Math.min(Math.abs(r-0.4)/0.1,1.0)}else mouth_score=0.5;
-
-  // Jaw
-  let jaw_score;
-  if(bizygomatic>0){const r=bigonial/bizygomatic;jaw_score=1-Math.min(Math.abs(r-0.88)/0.88,1.0)}else jaw_score=0.5;
-
-  // Golden vertical
-  const eye_center_y=(pts[159][1]+pts[386][1])/2;
-  const mouth_y=pts[13][1], chin_y=chin[1];
-  const upper=mouth_y-eye_center_y, lower=chin_y-mouth_y;
-  let gold_vert_score=lower>0?(1-Math.min(Math.abs((upper/lower)-1.618)/1.618,1.0)):0.5;
-
-  // Golden horizontal
-  const lew=dist(pts[33],pts[133]), rew=dist(pts[362],pts[263]);
-  const eye_avg=(lew+rew)/2, eye_d=dist(pts[133],pts[362]);
-  let gold_horiz_score=eye_d>0?(1-Math.min(Math.abs((eye_avg/eye_d)-1.0),1.0)):0.5;
-
-  // Canthal tilt — EXACT bot formula
+  let ipd_score=bizygomatic>0?1-Math.min(Math.abs(ipd/bizygomatic-0.46)/0.1,1):0.5;
+  let nose_width_score=ipd>0?Math.max(0.1,Math.exp(-((nose_width/ipd-1)**2)/(2*0.09))):0.5;
+  let mouth_score=bizygomatic>0?1-Math.min(Math.abs(mouth_width/bizygomatic-0.4)/0.1,1):0.5;
+  let jaw_score=bizygomatic>0?1-Math.min(Math.abs(bigonial/bizygomatic-0.88)/0.88,1):0.5;
+  const eye_center_y=(pts[159][1]+pts[386][1])/2;const upper=pts[13][1]-eye_center_y,lower=chin[1]-pts[13][1];
+  let gold_vert_score=lower>0?1-Math.min(Math.abs((upper/lower)-1.618)/1.618,1):0.5;
+  const eye_avg=(dist(pts[33],pts[133])+dist(pts[362],pts[263]))/2;const eye_d=dist(pts[133],pts[362]);
+  let gold_horiz_score=eye_d>0?1-Math.min(Math.abs((eye_avg/eye_d)-1),1):0.5;
   const lt=Math.atan2(pts[33][1]-pts[133][1],pts[33][0]-pts[133][0])*180/Math.PI;
   const rt=Math.atan2(pts[263][1]-pts[362][1],-(pts[263][0]-pts[362][0]))*180/Math.PI;
   const canthal_tilt=Math.round((lt+rt)/2*10)/10;
-  const tilt_score=Math.max(0,1-Math.abs(canthal_tilt-6.0)/10);
-
-  // PSL
+  const tilt_score=Math.max(0,1-Math.abs(canthal_tilt-6)/10);
   const psl_raw=(symmetry_score*0.25+ipd_score*0.15+nose_width_score*0.1+mouth_score*0.1+jaw_score*0.15+gold_vert_score*0.1+gold_horiz_score*0.05+tilt_score*0.1)*7+1;
-  const psl=Math.round(Math.min(Math.max(psl_raw,1.0),8.0)*10)/10;
-
+  const psl=Math.round(Math.min(Math.max(psl_raw,1),8)*10)/10;
   return{psl,symmetry:Math.round(symmetry_score*100),ipd_score:Math.round(ipd_score*100),nose_width_score:Math.round(nose_width_score*100),mouth_score:Math.round(mouth_score*100),jaw:Math.round(jaw_score*100),gold_vert:Math.round(gold_vert_score*100),gold_horiz:Math.round(gold_horiz_score*100),canthal_tilt,tilt_score:Math.round(tilt_score*100)};
 }
 
 function drawAnalysis(canvas,img,pts,r){
   const maxW=600;let w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
   if(Math.max(w,h)>maxW){const s=maxW/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s)}
-  canvas.width=w;canvas.height=h;
-  const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,w,h);
+  canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,w,h);
   const sx=w/(img.naturalWidth||img.width),sy=h/(img.naturalHeight||img.height);
   const p=i=>[Math.round(pts[i][0]*sx),Math.round(pts[i][1]*sy)];
   const nx=p(1)[0];
-  const lines=[[[nx,p(10)[1]],[nx,p(152)[1]],'#00ff00'],[p(234),p(454),'#ffff00'],[p(58),p(288),'#00ffff'],[p(468),p(473),'#ff00ff'],[p(98),p(327),'#800080'],[p(61),p(291),'#ff0000'],[p(168),p(1),'#008080'],[p(33),p(133),'#ff8000'],[p(362),p(263),'#ff8000']];
-  ctx.lineWidth=2;
-  lines.forEach(([a,b,c])=>{ctx.strokeStyle=c;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()});
+  [[  [nx,p(10)[1]],[nx,p(152)[1]],'#00ff00'],[p(234),p(454),'#ffff00'],[p(58),p(288),'#00ffff'],[p(468),p(473),'#ff00ff'],[p(98),p(327),'#800080'],[p(61),p(291),'#ff0000'],[p(168),p(1),'#008080'],[p(33),p(133),'#ff8000'],[p(362),p(263),'#ff8000']
+  ].forEach(([a,b,c])=>{ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()});
   [1,10,152,234,454,58,288,468,473,98,327,61,291,168,33,133,362,263].forEach(i=>{const pt=p(i);ctx.fillStyle='rgba(0,255,0,0.6)';ctx.beginPath();ctx.arc(pt[0],pt[1],2,0,Math.PI*2);ctx.fill()});
   const bw=w<400?60:80,bh=w<400?28:34,bx=w-bw-10,by=10;
-  ctx.fillStyle='rgba(10,10,20,0.85)';ctx.fillRect(bx,by,bw,bh);
-  ctx.strokeStyle='rgba(247,201,72,0.6)';ctx.lineWidth=1;ctx.strokeRect(bx,by,bw,bh);
-  ctx.fillStyle='#f7c948';ctx.font='bold '+(w<400?16:20)+'px sans-serif';ctx.textAlign='center';
-  ctx.fillText(r.psl.toFixed(1),bx+bw/2,by+bh/2+1);
+  ctx.fillStyle='rgba(10,10,20,0.85)';ctx.fillRect(bx,by,bw,bh);ctx.strokeStyle='rgba(247,201,72,0.6)';ctx.lineWidth=1;ctx.strokeRect(bx,by,bw,bh);
+  ctx.fillStyle='#f7c948';ctx.font='bold '+(w<400?16:20)+'px sans-serif';ctx.textAlign='center';ctx.fillText(r.psl.toFixed(1),bx+bw/2,by+bh/2+1);
   ctx.font=(w<400?7:8)+'px sans-serif';ctx.fillStyle='#aaa';ctx.fillText('/ 8.0',bx+bw/2,by+bh/2+13);
 }
 
 function generateTips(r){
-  const tips=[];
-  if(r.symmetry<75)tips.push('Асимметрия: сон на спине, упражнения для лица, ортодонт.');
-  if(r.ipd_score<60)tips.push('Межглазное расстояние: подбери форму бровей, макияж глаз.');
-  if(r.nose_width_score<60)tips.push('Ширина носа: контуринг, коррекция бровей.');
-  if(r.mouth_score<60)tips.push('Ширина рта: макияж губ, форма усов/бороды.');
-  if(r.jaw<70)tips.push('Челюсть: mewing, жёсткая пища, ортодонт.');
-  if(r.gold_vert<60)tips.push('Вертикальные пропорции: причёска/борода.');
-  if(r.gold_horiz<50)tips.push('Расстояние между глазами: форма бровей.');
-  if(r.canthal_tilt<-2)tips.push('Наклон глаз вниз — массаж области вокруг глаз.');
-  else if(r.canthal_tilt>7)tips.push('Сильный наклон вверх — коррекция бровями.');
-  if(!tips.length)tips.push('Гармоничные черты, так держать!');
-  return tips;
+  const t=[];
+  if(r.symmetry<75)t.push('Асимметрия: сон на спине, facial yoga.');
+  if(r.ipd_score<60)t.push('Межглазное: форма бровей, макияж.');
+  if(r.nose_width_score<60)t.push('Нос: контуринг.');
+  if(r.mouth_score<60)t.push('Рот: макияж губ, борода.');
+  if(r.jaw<70)t.push('Челюсть: mewing, жёсткая пища.');
+  if(r.gold_vert<60)t.push('Пропорции: причёска/борода.');
+  if(r.gold_horiz<50)t.push('Глаза: форма бровей.');
+  if(r.canthal_tilt<-2)t.push('Наклон вниз — массаж вокруг глаз.');
+  else if(r.canthal_tilt>7)t.push('Наклон вверх — коррекция бровями.');
+  if(!t.length)t.push('Гармоничные черты, так держать!');return t;
 }
 
 function generateRoast(r){
-  const roasts=[];
-  if(r.canthal_tilt<-2)roasts.push('Угол глаз как у печального бассет-хаунда');
-  else if(r.canthal_tilt>7)roasts.push('Это не глаза, это лазерный прицел');
-  if(r.symmetry<65)roasts.push('Симметрия уровня "Пикассо в плохой день"');
-  if(r.psl<3.5)roasts.push('Твой PSL такой, что зеркала обижаются');
-  else if(r.psl>6)roasts.push('Ты либо модель, либо бот');
-  return roasts;
+  const t=[];
+  if(r.canthal_tilt<-2)t.push('Глаза как у печального бассет-хаунда');
+  else if(r.canthal_tilt>7)t.push('Это не глаза, это лазерный прицел');
+  if(r.symmetry<65)t.push('Симметрия уровня "Пикассо в плохой день"');
+  if(r.psl<3.5)t.push('PSL такой, что зеркала обижаются');
+  else if(r.psl>6)t.push('Ты либо модель, либо бот');return t;
 }
 
 // === PHOTO ===
 let photoDataUrl=null;
-$('fileInput').onchange=e=>{
-  const f=e.target.files[0];if(!f)return;
-  if(f.size>10*1024*1024){toast('Файл слишком большой');$('fileInput').value='';return}
-  const r=new FileReader();r.onload=ev=>{photoDataUrl=ev.target.result;$('photoPreview').src=photoDataUrl;$('photoPreview').style.display='';$('analyzeBtn').style.display='';$('uploadZone').style.display='none'};r.readAsDataURL(f);
-};
+$('fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>10*1024*1024){toast('Файл >10MB');$('fileInput').value='';return}const r=new FileReader();r.onload=ev=>{photoDataUrl=ev.target.result;$('photoPreview').src=photoDataUrl;$('photoPreview').style.display='';$('analyzeBtn').style.display='';$('uploadZone').style.display='none'};r.readAsDataURL(f)};
 
-function resetPhoto(){
-  photoDataUrl=null;$('photoPreview').style.display='none';$('photoPreview').src='';
-  $('analyzeBtn').style.display='none';$('uploadZone').style.display='';
-  $('analyzing').style.display='none';$('resultCard').style.display='none';
-  $('annotatedCanvas').style.display='none';$('fileInput').value='';
-}
+function resetPhoto(){photoDataUrl=null;$('photoPreview').style.display='none';$('photoPreview').src='';$('analyzeBtn').style.display='none';$('uploadZone').style.display='';$('analyzing').style.display='none';$('resultCard').style.display='none';$('annotatedCanvas').style.display='none';$('fileInput').value=''}
 
 async function analyzePhoto(){
-  if(!photoDataUrl){toast('Сначала загрузи фото');return}
-  if(analyzingBusy)return;analyzingBusy=true;
-  $('analyzing').style.display='';$('analyzeBtn').style.display='none';$('resultCard').style.display='none';
-  $('analyzingText').textContent='Загружаю AI модель...';
-  try{
-    const faceMesh=await ensureFaceMesh();
-    $('analyzingText').textContent='Анализирую лицо...';
-    const img=new Image();
-    img.onload=()=>{
-      const cv=document.createElement('canvas');cv.width=img.width;cv.height=img.height;
-      cv.getContext('2d').drawImage(img,0,0);
-      faceMesh.onResults(results=>{
-        faceMesh.onResults(()=>{});
-        if(!results.multiFaceLandmarks||!results.multiFaceLandmarks.length){
-          $('analyzing').style.display='none';$('uploadZone').style.display='';analyzingBusy=false;
-          toast('Лицо не обнаружено');return;
-        }
-        const lm=results.multiFaceLandmarks[0];
-        const pts=lm.map(l=>[Math.round(l.x*img.width),Math.round(l.y*img.height)]);
-        const metrics=computeMetrics(pts);
-        drawAnalysis($('annotatedCanvas'),img,pts,metrics);
-        $('annotatedCanvas').style.display='';
-        $('analyzing').style.display='none';analyzingBusy=false;
-        showResult(metrics);
-      });
-      faceMesh.send({image:cv}).catch(e=>{$('analyzing').style.display='none';$('uploadZone').style.display='';analyzingBusy=false;toast('Ошибка анализа')});
-    };
-    img.onerror=()=>{$('analyzing').style.display='none';$('uploadZone').style.display='';analyzingBusy=false;toast('Не удалось загрузить изображение')};
-    img.src=photoDataUrl;
-  }catch(e){$('analyzing').style.display='none';$('uploadZone').style.display='';analyzingBusy=false;toast('AI модель не загрузилась. Проверь интернет.')}
+  if(!photoDataUrl){toast('Загрузи фото');return}if(analyzingBusy)return;analyzingBusy=true;
+  $('analyzing').style.display='';$('analyzeBtn').style.display='none';$('resultCard').style.display='none';$('analyzingText').textContent='Загружаю AI модель...';
+  try{const fm=await ensureFaceMesh();$('analyzingText').textContent='Анализирую лицо...';
+    const img=new Image();img.onload=()=>{const cv=document.createElement('canvas');cv.width=img.width;cv.height=img.height;cv.getContext('2d').drawImage(img,0,0);
+      fm.onResults(results=>{fm.onResults(()=>{});
+        if(!results.multiFaceLandmarks?.length){$('analyzing').style.display='none';$('uploadZone').style.display='';analyzingBusy=false;toast('Лицо не найдено');return}
+        const lm=results.multiFaceLandmarks[0];const pts=lm.map(l=>[Math.round(l.x*img.width),Math.round(l.y*img.height)]);
+        const m=computeMetrics(pts);drawAnalysis($('annotatedCanvas'),img,pts,m);$('annotatedCanvas').style.display='';$('analyzing').style.display='none';analyzingBusy=false;showResult(m)});
+      fm.send({image:cv}).catch(()=>{$('analyzing').style.display='none';$('uploadZone').style.display='';analyzingBusy=false;toast('Ошибка')})};
+    img.onerror=()=>{$('analyzing').style.display='none';$('uploadZone').style.display='';analyzingBusy=false;toast('Ошибка загрузки')};img.src=photoDataUrl;
+  }catch(e){$('analyzing').style.display='none';$('uploadZone').style.display='';analyzingBusy=false;toast('AI не загрузилась')}
 }
 
 function showResult(r){
-  $('resultCard').style.display='';$('rPsl').textContent=r.psl.toFixed(1);
-  $('rCat').innerHTML=getCatBadge(r.psl);
-  const mets=[['Симметрия',r.symmetry,'#4ecdc4'],['Межзрачковое',r.ipd_score,'#4a9eff'],['Пропорция носа',r.nose_width_score,'#a855f7'],['Ширина рта',r.mouth_score,'#ff6b9d'],['Челюсть',r.jaw,'#f7c948'],['Золотое сечение ↕',r.gold_vert,'#4ecdc4'],['Пропорция глаз ↔',r.gold_horiz,'#4a9eff'],['Наклон глаз',r.tilt_score,'#a855f7']];
-  let mh='';mets.forEach(([n,v,c])=>{mh+=`<div class="metric"><div class="name">${n}</div><div class="bar"><div class="fill" style="width:${v}%;background:${c}"></div></div><div class="val" style="color:${c}">${v}%</div></div>`});
-  $('rMetrics').innerHTML=mh;
+  $('resultCard').style.display='';$('rPsl').textContent=r.psl.toFixed(1);$('rCat').innerHTML=getCatBadge(r.psl);
+  [['Симметрия',r.symmetry,'#4ecdc4'],['IPD',r.ipd_score,'#4a9eff'],['Нос',r.nose_width_score,'#a855f7'],['Рот',r.mouth_score,'#ff6b9d'],['Челюсть',r.jaw,'#f7c948'],['Золотое ↕',r.gold_vert,'#4ecdc4'],['Глаза ↔',r.gold_horiz,'#4a9eff'],['Наклон',r.tilt_score,'#a855f7']].forEach(([n,v,c])=>{
+  });let mh='';[['Симметрия',r.symmetry,'#4ecdc4'],['IPD',r.ipd_score,'#4a9eff'],['Нос',r.nose_width_score,'#a855f7'],['Рот',r.mouth_score,'#ff6b9d'],['Челюсть',r.jaw,'#f7c948'],['Золотое ↕',r.gold_vert,'#4ecdc4'],['Глаза ↔',r.gold_horiz,'#4a9eff'],['Наклон',r.tilt_score,'#a855f7']].forEach(([n,v,c])=>{mh+=`<div class="metric"><div class="name">${n}</div><div class="bar"><div class="fill" style="width:${v}%;background:${c}"></div></div><div class="val" style="color:${c}">${v}%</div></div>`});$('rMetrics').innerHTML=mh;
   const tips=generateTips(r),roasts=generateRoast(r);
-  let th=tips.map(t=>'✅ '+t).join('<br>');
-  if(roasts.length)th+='<br><br>'+roasts.map(t=>'<span style="color:var(--red)">🔥 '+t+'</span>').join('<br>');
-  $('rTips').innerHTML=th;
-
-  // Save to user
+  let th=tips.map(t=>'✅ '+t).join('<br>');if(roasts.length)th+='<br><br>'+roasts.map(t=>'<span style="color:var(--red)">🔥 '+t+'</span>').join('<br>');$('rTips').innerHTML=th;
   if(myData){
-    myData.last_psl=r.psl;myData.metrics=r;
-    const today=new Date().toISOString().split('T')[0];
-    if(!myData.history)myData.history=[];
-    myData.history.push({date:today,psl:r.psl,symmetry:r.symmetry});
-    myData.coins=(myData.coins||0)+10;
-    setUserData(currentUser,myData);
-    postScore(r.psl,r.symmetry);
-    checkAchievements();updateProfileUI();
-    toast('+10 🪙 за анализ!');
+    const prev_psl=myData.last_psl;myData.last_psl=r.psl;myData.metrics=r;
+    if(!myData.history)myData.history=[];myData.history.push({date:new Date().toISOString().split('T')[0],psl:r.psl,symmetry:r.symmetry});
+    let coins=10;const mult=(myData.double_coins_until&&Date.now()<myData.double_coins_until)?2:1;if(myData.lucky_analyses>0){coins=15;myData.lucky_analyses--}
+    coins*=mult;myData.coins=(myData.coins||0)+coins;
+    setUserData(currentUser,myData);postScore(r.psl,r.symmetry);checkAchievements();updateProfileUI();playSound('coin');toast('+'+coins+' 🪙 за анализ!');
   }
   $('resultCard').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function shareResult(){
-  const t='🎯 moggme\nPSL: '+$('rPsl').textContent+'/8.0\n\nПопробуй оценить своё лицо! '+location.origin;
-  if(navigator.share)navigator.share({title:'moggme',text:t}).catch(()=>{});
-  else if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>toast('Скопировано!'));
-}
+function shareResult(){const t='🎯 moggme\nPSL: '+$('rPsl').textContent+'/8.0\n\nПопробуй! '+location.origin;if(navigator.share)navigator.share({title:'moggme',text:t}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>toast('Скопировано!'))}
 
 // === BATTLES ===
-function calculateEloChange(winnerElo,loserElo,k=32){
-  const expected=1/(1+Math.pow(10,(loserElo-winnerElo)/400));
-  return{newWinner:Math.round(winnerElo+k*(1-expected)),newLoser:Math.round(loserElo+k*(0-(1-expected)))};
-}
+function calcElo(w,l,k=32){const e=1/(1+10**((l-w)/400));return{nw:Math.round(w+k*(1-e)),nl:Math.round(l+k*(0-(1-e)))}}
 
 function startBattle(){
   const n=$('battleInput').value.trim();if(!n){toast('Введи ник');return}
-  const users=getUsers();
-  let opponent=null;
-  for(const k in users){if(users[k].nickname&&users[k].nickname.toLowerCase()===n.toLowerCase()&&k!==currentUser){opponent=users[k];break}}
-  if(!opponent){toast('Игрок не найден');return}
-  if(!myData.last_psl||!opponent.last_psl){toast('Оба игрока должны пройти анализ');return}
-  const psl1=myData.last_psl,psl2=opponent.last_psl;
-  const sym1=myData.metrics?.symmetry||0,sym2=opponent.metrics?.symmetry||0;
-  let winnerId,loserId,wp,lp;
-  if(psl1>psl2){winnerId=currentUser;loserId=opponent.id;wp=psl1;lp=psl2}
-  else if(psl2>psl1){winnerId=opponent.id;loserId=currentUser;wp=psl2;lp=psl1}
-  else if(sym1>sym2){winnerId=currentUser;loserId=opponent.id;wp=psl1;lp=psl2}
-  else if(sym2>sym1){winnerId=opponent.id;loserId=currentUser;wp=psl2;lp=psl1}
-  else{toast('Ничья! Одинаковый PSL и симметрия');return}
-  const w=winnerId===currentUser?myData:opponent;
-  const l=winnerId===currentUser?opponent:myData;
-  const{newWinner,newLoser}=calculateEloChange(w.elo||1000,l.elo||1000);
-  w.elo=newWinner;w.wins=(w.wins||0)+1;w.coins=(w.coins||0)+25;
-  l.elo=newLoser;l.losses=(l.losses||0)+1;
-  setUserData(winnerId,w);setUserData(loserId,l);
-  if(winnerId===currentUser){myData=w}else{myData=l}
-  setUserData(currentUser,myData);
-  const won=winnerId===currentUser;
-  showBattleResult({winner:won?myData.nickname:opponent.nickname,loser:won?opponent.nickname:myData.nickname,won,psl1:wp.toFixed(1),psl2:lp.toFixed(1),eloGain:newWinner-(won?1000:0),eloLoss:1000-newLoser});
-  $('battleInput').value='';updateProfileUI();
+  const users=getUsers();let opp=null;for(const k in users){if(users[k].nickname&&users[k].nickname.toLowerCase()===n.toLowerCase()&&k!==currentUser){opp=users[k];break}}
+  if(!opp){toast('Игрок не найден');return}if(!myData.last_psl||!opp.last_psl){toast('Оба должны пройти анализ');return}
+  doBattle(opp);
 }
 
 function autoBattle(){
-  toast('Ищу соперника...');
   const users=getAllUsers().filter(u=>u.id!==currentUser&&u.last_psl);
-  if(!users.length){toast('Нет других игроков с замером');return}
-  const opp=users[Math.floor(Math.random()*users.length)];
-  if(!myData.last_psl){toast('Сначала пройди анализ');return}
-  const psl1=myData.last_psl,psl2=opp.last_psl;
-  const sym1=myData.metrics?.symmetry||0,sym2=opp.metrics?.symmetry||0;
-  let winnerId,loserId,wp,lp;
-  if(psl1>psl2){winnerId=currentUser;loserId=opp.id;wp=psl1;lp=psl2}
-  else if(psl2>psl1){winnerId=opp.id;loserId=currentUser;wp=psl2;lp=psl1}
-  else if(sym1>=sym2){winnerId=currentUser;loserId=opp.id;wp=psl1;lp=psl2}
-  else{winnerId=opp.id;loserId=currentUser;wp=psl2;lp=psl1}
-  const w=winnerId===currentUser?myData:opp;
-  const l=winnerId===currentUser?opp:myData;
-  const{newWinner,newLoser}=calculateEloChange(w.elo||1000,l.elo||1000);
-  w.elo=newWinner;w.wins=(w.wins||0)+1;w.coins=(w.coins||0)+25;
-  l.elo=newLoser;l.losses=(l.losses||0)+1;
-  setUserData(winnerId,w);setUserData(loserId,l);
-  if(winnerId===currentUser){myData=w}else{myData=l}
-  setUserData(currentUser,myData);
-  const won=winnerId===currentUser;
-  showBattleResult({winner:won?myData.nickname:opp.nickname,loser:won?opp.nickname:myData.nickname,won,psl1:wp.toFixed(1),psl2:lp.toFixed(1)});
-  updateProfileUI();
+  if(!users.length){toast('Нет соперников');return}doBattle(users[Math.floor(Math.random()*users.length)]);
 }
 
-function showBattleResult(r){
+function doBattle(opp){
+  const p1=myData.last_psl,p2=opp.last_psl;const s1=myData.metrics?.symmetry||0,s2=opp.metrics?.symmetry||0;
+  let winnerId,wp,lp;
+  if(p1>p2){winnerId=currentUser;wp=p1;lp=p2}
+  else if(p2>p1){winnerId=opp.id;wp=p2;lp=p1}
+  else if(s1>=s2){winnerId=currentUser;wp=p1;lp=p2}else{winnerId=opp.id;wp=p2;lp=p1}
+  const won=winnerId===currentUser;
+  if(!won&&myData.shield){myData.shield=false;setUserData(currentUser,myData);toast('🛡 Щит сработал! Поражение отменено');return}
+  const w=won?myData:opp,l=won?opp:myData;
+  const{nw,nl}=calcElo(w.elo||1000,l.elo||1000);
+  w.elo=nw;w.wins=(w.wins||0)+1;w.coins=(w.coins||0)+25;l.elo=nl;l.losses=(l.losses||0)+1;
+  if(won){myData.win_streak=(myData.win_streak||0)+1;myData.best_win_streak=Math.max(myData.best_win_streak||0,myData.win_streak)}else myData.win_streak=0;
+  setUserData(opp.id,opp);setUserData(currentUser,myData);
   const el=document.createElement('div');el.className='card';
-  el.innerHTML=`<div class="battle-card"><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">Ты</div><div class="${r.won?'winner':'loser'}" style="font-size:14px;font-weight:700">${r.won?'🏆':'💀'} PSL ${r.psl1}</div></div><div class="vs">VS</div><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">${r.winner===r.loser?'?':r.winner==='Ты'?r.loser:r.winner}</div><div class="${!r.won?'winner':'loser'}" style="font-size:14px;font-weight:700">${!r.won?'🏆':'💀'} PSL ${r.psl2}</div></div></div><div style="text-align:center;font-size:12px;font-weight:700;color:${r.won?'var(--green)':'var(--red)'}">${r.won?'Ты победил! +25 🪙':'Ты проиграл'}</div>`;
+  el.innerHTML=`<div class="battle-card"><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">Ты</div><div class="${won?'winner':'loser'}" style="font-size:14px;font-weight:700">${won?'🏆':'💀'} PSL ${wp.toFixed(1)}</div></div><div class="vs">VS</div><div style="text-align:center;flex:1"><div style="font-size:10px;color:var(--dim)">${opp.nickname}</div><div class="${!won?'winner':'loser'}" style="font-size:14px;font-weight:700">${!won?'🏆':'💀'} PSL ${lp.toFixed(1)}</div></div></div><div style="text-align:center;font-size:12px;font-weight:700;color:${won?'var(--green)':'var(--red)'}">${won?'Победа! +25 🪙':'Проиграл'}</div>`;
   const h=$('battleHistory');if(h.classList.contains('empty'))h.innerHTML='';h.prepend(el);
-  if(!myData.battles)myData.battles=[];
-  myData.battles.unshift({date:new Date().toISOString(),won:r.won,psl1:r.psl1,psl2:r.psl2,opponent:r.winner==='Ты'?r.loser:r.winner});
-  if(myData.battles.length>20)myData.battles=myData.battles.slice(0,20);
-  setUserData(currentUser,myData);
+  if(!myData.battles)myData.battles=[];myData.battles.unshift({date:Date.now(),won,psl1:wp.toFixed(1),psl2:lp.toFixed(1),opponent:opp.nickname});
+  if(myData.battles.length>30)myData.battles=myData.battles.slice(0,30);
+  setUserData(currentUser,myData);playSound(won?'win':'lose');checkAchievements();updateProfileUI();updateBattleUI();$('battleInput').value='';
+}
+
+function updateBattleUI(){
+  if(!myData)return;
+  const total=(myData.wins||0)+(myData.losses||0);const wr=total>0?Math.round((myData.wins||0)/total*100):0;
+  $('bWinStreak').textContent=myData.win_streak||0;$('bTotal').textContent=total;$('bWinRate').textContent=wr+'%';
+  if(myData.battles?.length){let h='';myData.battles.slice(0,10).forEach(b=>{const d=new Date(b.date);const ds=d.toLocaleDateString('ru',{day:'2-digit',month:'2-digit'});h+=`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--bd);font-size:11px"><span style="font-size:14px">${b.won?'🏆':'💀'}</span><span style="flex:1">${b.opponent}</span><span>PSL ${b.psl1}</span><span style="color:var(--dim)">${ds}</span></div>`});$('battleHistory').innerHTML=h}
 }
 
 // === SHOP ===
-function buyElo(a,p){
-  if((myData?.coins||0)<p){toast('Нужно '+p+' монет');return}
-  myData.coins-=p;myData.elo=(myData.elo||1000)+a;
-  setUserData(currentUser,myData);updateProfileUI();toast('+'+a+' ELO!');
+const SHOP_ITEMS={
+  elo100:{action:()=>{myData.elo=(myData.elo||1000)+100},toast:'+100 ELO!'},
+  elo200:{action:()=>{myData.elo=(myData.elo||1000)+200},toast:'+200 ELO!'},
+  elo500:{action:()=>{myData.elo=(myData.elo||1000)+500},toast:'+500 ELO!'},
+  premium:{action:()=>{myData.premium=true},toast:'Premium активирован!'},
+  vip:{action:()=>{myData.vip=true;myData.vip_until=Date.now()+30*86400000},toast:'VIP на 30 дней!'},
+  platinum:{action:()=>{myData.platinum=true;myData.vip=true;myData.vip_until=Date.now()+3650*86400000},toast:'Платиновый навсегда!'},
+  double_coins:{action:()=>{myData.double_coins_until=Date.now()+86400000},toast:'x2 монеты на 24ч!'},
+  lucky_boost:{action:()=>{myData.lucky_analyses=(myData.lucky_analyses||0)+10},toast:'Lucky-буст на 10 анализов!'},
+  shield:{action:()=>{myData.shield=true},toast:'Щит активирован!'},
+};
+function buyItem(key,price){
+  if(!myData)return;if((myData.coins||0)<price){toast('Нужно '+price+' 🪙');return}
+  const item=SHOP_ITEMS[key];if(!item)return;
+  if(key==='vip'&&myData.vip&&myData.vip_until>Date.now()){toast('VIP уже активен');return}
+  if(key==='platinum'&&myData.platinum){toast('Уже платиновый');return}
+  if(key==='shield'&&myData.shield){toast('Щит уже есть');return}
+  myData.coins-=price;item.action();setUserData(currentUser,myData);playSound('unlock');updateShopUI();updateProfileUI();toast(item.toast);
 }
-function buyPremium(item,cost){
-  if((myData?.coins||0)<cost){toast('Нужно '+cost+' монет');return}
-  myData.coins-=cost;
-  if(item==='premium_report')myData.premium=true;
-  else if(item==='vip_30'){myData.vip=true;setTimeout(()=>{myData.vip=false;setUserData(currentUser,myData);toast('VIP истёк')},30*24*60*60*1000)}
-  else if(item==='platinum'){myData.platinum=true;myData.vip=true}
-  setUserData(currentUser,myData);updateProfileUI();toast('Покупка успешна!');
-}
-function copyRef(){const l=myData?location.origin+'/?ref='+myData.id:'';if(navigator.clipboard)navigator.clipboard.writeText(l).then(()=>toast('Скопировано!'))}
 
-// === REFERRAL CHECK ===
-(function(){
-  const params=new URLSearchParams(location.search);
-  const ref=params.get('ref');
-  if(ref&&currentUser&&ref!==currentUser){
-    const users=getUsers();
-    if(users[ref]&&myData){
-      if(!myData._referred){
-        myData._referred=true;myData.coins=(myData.coins||0)+100;
-        users[ref].referrals=(users[ref].referrals||0)+1;
-        users[ref].ref_earned=(users[ref].ref_earned||0)+150;
-        users[ref].coins=(users[ref].coins||0)+150;
-        setUserData(currentUser,myData);saveUsers(users);
-        toast('Реферальная бонус: +100 🪙');
-      }
-    }
-  }
-})();
+function updateShopUI(){
+  if(!myData)return;$('sCoins').textContent=myData.coins||0;
+  const mult=(myData.double_coins_until&&Date.now()<myData.double_coins_until)?2:1;
+  let di='';if(myData.vip||myData.platinum)di+='👑 VIP ';if(mult>1)di+='🪙x2 ';if(myData.shield)di+='🛡 ';if(myData.lucky_analyses>0)di+='🍀x'+myData.lucky_analyses;
+  $('sDailyInfo').textContent=di;
+  if(myData.premium)$('shopPremium').innerHTML='<div class="si">💎</div><div class="inf"><div class="nm">Premium-отчёт</div><div class="ds">Активирован</div></div><div class="owned-tag">✅ Куплено</div>';
+  if(myData.vip)$('shopVip').innerHTML='<div class="si">👑</div><div class="inf"><div class="nm">VIP активен</div><div class="ds">Действует до '+new Date(myData.vip_until).toLocaleDateString('ru')+'</div></div><div class="owned-tag">✅ Активен</div>';
+  if(myData.platinum)$('shopPlat').innerHTML='<div class="si">💠</div><div class="inf"><div class="nm">Платиновый</div><div class="ds">Навсегда</div></div><div class="owned-tag">✅ Активен</div>';
+  renderShopFrames();
+}
+
+function copyRef(){if(navigator.clipboard)navigator.clipboard.writeText(location.origin+'/?ref='+myData.id).then(()=>toast('Скопировано!'))}
+
+// === REFERRAL ===
+(function(){const p=new URLSearchParams(location.search);const ref=p.get('ref');if(ref&&currentUser&&ref!==currentUser){const users=getUsers();if(users[ref]&&myData&&!myData._referred){myData._referred=true;myData.coins=(myData.coins||0)+100;users[ref].referrals=(users[ref].referrals||0)+1;users[ref].ref_earned=(users[ref].ref_earned||0)+150;users[ref].coins=(users[ref].coins||0)+150;setUserData(currentUser,myData);saveUsers(users);toast('Реферал: +100 🪙')}}})();
 </script>
+<style>@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}</style>
 </body>
 </html>
